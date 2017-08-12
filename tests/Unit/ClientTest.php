@@ -5,6 +5,8 @@ namespace Tests\Unit;
 use Gorilla\Client;
 use Gorilla\Contracts\EntityInterface;
 use Gorilla\Contracts\MethodType;
+use Gorilla\Entities\Menu;
+use Gorilla\Exceptions\NonExistMethodException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
@@ -126,6 +128,21 @@ class ClientTest extends TestCase
         
         // Assert
         $this->assertEquals('https://www.google.com', $request->getUri()->__toString());
+    }
+
+    /** @test */
+    public function call_entity()
+    {
+        // Assert
+        $this->assertInstanceOf(Menu::class, $this->client->menus());
+    }
+
+    /** @test */
+    public function no_exist_method()
+    {
+        $this->expectException(NonExistMethodException::class);
+
+        $this->client->foobar();
     }
 }
 
