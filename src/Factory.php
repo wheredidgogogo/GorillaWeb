@@ -2,7 +2,9 @@
 
 namespace Gorilla;
 
+use Gorilla\Contracts\EntityInterface;
 use Gorilla\Entities\Menu;
+use Gorilla\Entities\Product;
 
 /**
  * Class Factory
@@ -14,13 +16,15 @@ class Factory
     /**
      * @param $method
      *
-     * @return Menu|null
+     * @return EntityInterface
      */
     public static function create($method)
     {
         switch ($method) {
             case 'menus':
                 return new Menu();
+            case 'products':
+                return new Product();
         }
 
         return null;
