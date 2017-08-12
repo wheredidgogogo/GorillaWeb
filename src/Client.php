@@ -5,6 +5,7 @@ namespace Gorilla;
 use Gorilla\Contracts\EntityInterface;
 use Gorilla\Contracts\MethodType;
 use Gorilla\Entities\AccessToken;
+use Gorilla\Exceptions\NonExistMethodException;
 use Gorilla\Response\JsonResponse;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Psr7;
@@ -177,5 +178,26 @@ class Client
         }
 
         $options['headers']['Authorization'] = "Bearer {$this->accessToken}";
+    }
+
+    /**
+     * @param $name
+     * @param $arguments
+     *
+     * @return JsonResponse|mixed|string
+     * @throws \Gorilla\Exceptions\NonExistMethodException
+     */
+    public function __call($name, $arguments)
+    {
+        if (method_exists($this, $name)) {
+            return call_user_func_array([$this, $name], $arguments);
+        }
+
+        $entity = Factory::create($name, $arguments);
+        if ($entity) {
+            return $this->request($entity);
+        }
+
+        throw new NonExistMethodException("Sorry, we didn't find ${name}");
     }
 }
