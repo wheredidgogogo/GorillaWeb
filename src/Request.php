@@ -4,13 +4,14 @@ namespace Gorilla;
 
 use Gorilla\Contracts\EntityInterface;
 use Gorilla\Contracts\MethodType;
+use Gorilla\Contracts\RequestInterface;
 use Gorilla\Entities\AccessToken;
 use Gorilla\Response\JsonResponse;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Psr7;
 
-class Request
+class Request implements RequestInterface
 {
     /**
      * @var string

@@ -32,11 +32,11 @@ abstract class EntityAbstract implements EntityInterface
     protected $parameters;
 
     /**
-     * @param Request $request
+     * @param RequestInterface $request
      *
      * @return $this
      */
-    public function setRequest(Request $request)
+    public function setRequest(RequestInterface $request)
     {
         $this->request = $request;
 
