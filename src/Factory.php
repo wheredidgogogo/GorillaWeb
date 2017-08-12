@@ -3,8 +3,10 @@
 namespace Gorilla;
 
 use Gorilla\Contracts\EntityInterface;
+use Gorilla\Entities\Category;
 use Gorilla\Entities\Menu;
 use Gorilla\Entities\Product;
+use Gorilla\Entities\Range;
 
 /**
  * Class Factory
@@ -25,6 +27,10 @@ class Factory
                 return new Menu();
             case 'products':
                 return new Product();
+            case 'categories':
+                return new Category();
+            case 'ranges':
+                return new Range();
         }
 
         return null;

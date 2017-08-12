@@ -6,6 +6,7 @@ use Gorilla\Contracts\EntityInterface;
 use Gorilla\Contracts\MethodType;
 use Gorilla\Contracts\RequestInterface;
 use Gorilla\Entities\AccessToken;
+use Gorilla\Exceptions\ResponseException;
 use Gorilla\Response\JsonResponse;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Client as HttpClient;
@@ -109,6 +110,8 @@ class Request implements RequestInterface
      * @param EntityInterface $entity
      *
      * @return JsonResponse|string
+     * @throws \Gorilla\Exceptions\ResponseException
+     * @throws \GuzzleHttp\Exception\RequestException
      */
     public function request(EntityInterface $entity)
     {
@@ -126,10 +129,10 @@ class Request implements RequestInterface
             return new JsonResponse($response);
         } catch (RequestException $ex) {
             if ($ex->hasResponse()) {
-                return Psr7\str($ex->getResponse());
+                throw new ResponseException(Psr7\str($ex->getResponse()));
             }
 
-            return Psr7\str($ex->getRequest());
+            throw new ResponseException(Psr7\str($ex->getRequest()));
         }
     }
 
