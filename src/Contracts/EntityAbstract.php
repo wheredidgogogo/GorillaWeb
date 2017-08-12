@@ -12,6 +12,8 @@ namespace Gorilla\Contracts;
  *
  * @package Gorilla\Contracts
  */
+use Gorilla\Request;
+
 /**
  * Class EntityAbstract
  *
@@ -20,17 +22,32 @@ namespace Gorilla\Contracts;
 abstract class EntityAbstract implements EntityInterface
 {
     /**
-     * @var array
+     * @var Request
      */
-    private $parameters;
+    protected $request;
 
     /**
-     * EntityAbstract constructor.
-     *
-     * @param array $parameters
+     * @var array
      */
-    public function __construct($parameters = [])
+    protected $parameters;
+
+    /**
+     * @param Request $request
+     *
+     * @return $this
+     */
+    public function setRequest(Request $request)
     {
-        $this->parameters = $parameters;
+        $this->request = $request;
+
+        return $this;
+    }
+
+    /**
+     * @return \Gorilla\Response\JsonResponse|string
+     */
+    public function get()
+    {
+        return $this->request->request($this);
     }
 }

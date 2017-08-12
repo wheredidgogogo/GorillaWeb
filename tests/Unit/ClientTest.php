@@ -45,6 +45,7 @@ class ClientTest extends TestCase
 
         // Act
         $this->client->request(new getStub());
+
         /** @var Request $request */
         $request = $this->container[0]['request'];
 

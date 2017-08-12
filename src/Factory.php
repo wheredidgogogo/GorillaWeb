@@ -13,15 +13,14 @@ class Factory
 {
     /**
      * @param $method
-     * @param $params
      *
      * @return Menu|null
      */
-    public static function create($method, $params)
+    public static function create($method)
     {
         switch ($method) {
             case 'menus':
-                return new Menu($params);
+                return new Menu();
         }
 
         return null;

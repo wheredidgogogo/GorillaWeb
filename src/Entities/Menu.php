@@ -5,9 +5,13 @@ namespace Gorilla\Entities;
 use Gorilla\Contracts\EntityAbstract;
 use Gorilla\Contracts\MethodType;
 
+/**
+ * Class Menu
+ *
+ * @package Gorilla\Entities
+ */
 class Menu extends EntityAbstract
 {
-
     /**
      * Request method type
      *
@@ -35,6 +39,32 @@ class Menu extends EntityAbstract
      */
     public function endpoint()
     {
+        return $this->buildEndpoint();
+    }
+
+    /**
+     * @return string
+     */
+    private function buildEndpoint()
+    {
+        if ($name = $this->parameters['name']) {
+            return "/website/menus/{$name}";
+        }
+
         return '/website/menus';
+    }
+
+    /**
+     * @param null $name
+     *
+     * @return \Gorilla\Response\JsonResponse|string
+     */
+    public function get($name = null)
+    {
+        if ($name) {
+            $this->parameters['name'] = $name;
+        }
+
+        return parent::get();
     }
 }
