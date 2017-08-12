@@ -35,6 +35,6 @@ class Menu extends EntityAbstract
      */
     public function endpoint()
     {
-        return '/applications/website/menus';
+        return '/website/menus';
     }
 }
