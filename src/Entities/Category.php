@@ -15,6 +15,27 @@ use Gorilla\Contracts\MethodType;
 class Category extends EntityAbstract
 {
     /**
+     * @var string|null
+     */
+    private $slug;
+
+    /**
+     * @var string|null
+     */
+    private $children = null;
+
+
+    /**
+     * Category constructor.
+     *
+     * @param $slug
+     */
+    public function __construct($slug = null)
+    {
+        $this->slug = $slug;
+    }
+
+    /**
      * Request method type
      *
      * @return string
@@ -49,24 +70,41 @@ class Category extends EntityAbstract
      */
     private function buildEndpoint()
     {
-        if ($name = $this->parameters['name']) {
-            return "/website/categories/{$name}";
+        $defaultRoutes = '/website/categories';
+
+
+        if ($this->slug) {
+            $defaultRoutes = "{$defaultRoutes}/{$this->slug}";
         }
 
-        return '/website/categories';
+        if ($this->children) {
+            $defaultRoutes = "{$defaultRoutes}/{$this->children}";
+        }
+
+        return $defaultRoutes;
     }
 
     /**
-     * @param null $name
+     * Get products
      *
-     * @return \Gorilla\Response\JsonResponse|string
+     * @return $this
      */
-    public function get($name = null)
+    public function products()
     {
-        if ($name) {
-            $this->parameters['name'] = $name;
-        }
+        $this->children = 'products';
 
-        return parent::get();
+        return $this;
+    }
+
+    /**
+     * Get ranges
+     *
+     * @return $this
+     */
+    public function ranges()
+    {
+        $this->children = 'ranges';
+
+        return $this;
     }
 }

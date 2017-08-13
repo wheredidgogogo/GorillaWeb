@@ -13,6 +13,27 @@ use Gorilla\Contracts\MethodType;
 class Range extends EntityAbstract
 {
     /**
+     * @var string|null
+     */
+    private $slug;
+
+    /**
+     * @var string|null
+     */
+    private $children = null;
+
+    /**
+     * Range constructor.
+     *
+     * @param null $slug
+     */
+    public function __construct($slug = null)
+    {
+        $this->slug = $slug;
+    }
+
+
+    /**
      * Request method type
      *
      * @return string
@@ -47,24 +68,24 @@ class Range extends EntityAbstract
      */
     private function buildEndpoint()
     {
-        if ($name = $this->parameters['name']) {
-            return "/website/ranges/{$name}";
+        $defaultRoutes = '/website/ranges';
+
+
+        if ($this->slug) {
+            $defaultRoutes = "{$defaultRoutes}/{$this->slug}";
         }
 
-        return '/website/ranges';
+        if ($this->children) {
+            $defaultRoutes = "{$defaultRoutes}/{$this->children}";
+        }
+
+        return $defaultRoutes;
     }
 
-    /**
-     * @param null $name
-     *
-     * @return \Gorilla\Response\JsonResponse|string
-     */
-    public function get($name = null)
+    public function products()
     {
-        if ($name) {
-            $this->parameters['name'] = $name;
-        }
+        $this->children = 'products';
 
-        return parent::get();
+        return $this;
     }
 }

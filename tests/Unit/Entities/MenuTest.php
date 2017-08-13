@@ -42,15 +42,13 @@ class MenuTest extends TestCase
     }
 
     /** @test */
-    public function get_()
+    public function get_single_menu()
     {
         // Arrange
-        $this->menu->setRequest(new Request());
-        // Act
-        $this->menu->get('name');
+        $menu = new Menu('name');
 
         // Assert
-        $this->assertEquals('/website/menus/name', $this->menu->endpoint());
+        $this->assertEquals('/website/menus/name', $menu->endpoint());
     }
 }
 

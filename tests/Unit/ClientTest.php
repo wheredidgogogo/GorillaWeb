@@ -30,9 +30,13 @@ class ClientTest extends TestCase
     {
         parent::setUp();
 
+        $mock = new MockHandler([
+            new Response(201),
+        ]);
+        $handler = HandlerStack::create($mock);
+
         $this->container = [];
         $history = Middleware::history($this->container);
-        $handler = HandlerStack::create();
         $handler->push($history);
 
         $this->client = new Client('fakeId', 'fakeToken');

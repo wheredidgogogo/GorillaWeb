@@ -12,6 +12,20 @@ use Gorilla\Contracts\MethodType;
  */
 class Product extends EntityAbstract
 {
+    /**
+     * @var string|null
+     */
+    private $slug;
+
+    /**
+     * Product constructor.
+     *
+     * @param null $slug
+     */
+    public function __construct($slug = null)
+    {
+        $this->slug = $slug;
+    }
 
     /**
      * Request method type
@@ -48,24 +62,13 @@ class Product extends EntityAbstract
      */
     private function buildEndpoint()
     {
-        if ($name = $this->parameters['name']) {
-            return "/website/products/{$name}";
+        $defaultRoutes = '/website/products';
+
+
+        if ($this->slug) {
+            $defaultRoutes = "{$defaultRoutes}/{$this->slug}";
         }
 
-        return '/website/products';
-    }
-
-    /**
-     * @param null $name
-     *
-     * @return \Gorilla\Response\JsonResponse|string
-     */
-    public function get($name = null)
-    {
-        if ($name) {
-            $this->parameters['name'] = $name;
-        }
-
-        return parent::get();
+        return $defaultRoutes;
     }
 }
