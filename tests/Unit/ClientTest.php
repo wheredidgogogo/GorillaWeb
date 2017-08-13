@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use Gorilla\Client;
 use Gorilla\Contracts\EntityInterface;
 use Gorilla\Contracts\MethodType;
+use Gorilla\Contracts\RequestInterface;
 use Gorilla\Entities\Menu;
 use Gorilla\Exceptions\NonExistMethodException;
 use GuzzleHttp\Handler\MockHandler;
@@ -185,6 +186,18 @@ class getStub implements EntityInterface
     {
         return '';
     }
+
+    /**
+     * Set Request
+     *
+     * @param RequestInterface $request
+     *
+     * @return mixed
+     */
+    public function setRequest(RequestInterface $request)
+    {
+        // TODO: Implement setRequest() method.
+    }
 }
 
 class postStub implements EntityInterface
@@ -221,5 +234,17 @@ class postStub implements EntityInterface
     public function endpoint()
     {
         return '';
+    }
+
+    /**
+     * Set Request
+     *
+     * @param RequestInterface $request
+     *
+     * @return mixed
+     */
+    public function setRequest(RequestInterface $request)
+    {
+        // TODO: Implement setRequest() method.
     }
 }

@@ -32,6 +32,15 @@ abstract class EntityAbstract implements EntityInterface
     protected $parameters;
 
     /**
+     * EntityAbstract constructor.
+     *
+     * @param $arguments
+     */
+    public function __construct($arguments = [])
+    {
+    }
+
+    /**
      * @param RequestInterface $request
      *
      * @return $this

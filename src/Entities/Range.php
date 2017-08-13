@@ -23,15 +23,19 @@ class Range extends EntityAbstract
     private $children = null;
 
     /**
-     * Range constructor.
+     * Category constructor.
      *
-     * @param null $slug
+     * @param $arguments
+     *
      */
-    public function __construct($slug = null)
+    public function __construct($arguments = [])
     {
-        $this->slug = $slug;
-    }
+        parent::__construct($arguments);
 
+        if (count($arguments) > 0) {
+            $this->slug = $arguments[0];
+        }
+    }
 
     /**
      * Request method type

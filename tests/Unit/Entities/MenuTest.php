@@ -45,7 +45,7 @@ class MenuTest extends TestCase
     public function get_single_menu()
     {
         // Arrange
-        $menu = new Menu('name');
+        $menu = new Menu(['name']);
 
         // Assert
         $this->assertEquals('/website/menus/name', $menu->endpoint());
