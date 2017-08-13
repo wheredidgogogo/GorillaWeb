@@ -29,4 +29,13 @@ interface EntityInterface
      * @return string
      */
     public function endpoint();
+
+    /**
+     * Set Request
+     *
+     * @param RequestInterface $request
+     *
+     * @return mixed
+     */
+    public function setRequest(RequestInterface $request);
 }

@@ -18,19 +18,21 @@ class Factory
     /**
      * @param $method
      *
+     * @param $arguments
+     *
      * @return EntityInterface
      */
-    public static function create($method)
+    public static function create($method, $arguments)
     {
         switch ($method) {
             case 'menus':
-                return new Menu();
+                return new Menu($arguments);
             case 'products':
-                return new Product();
+                return new Product($arguments);
             case 'categories':
-                return new Category();
+                return new Category($arguments);
             case 'ranges':
-                return new Range();
+                return new Range($arguments);
         }
 
         return null;

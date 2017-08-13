@@ -41,7 +41,7 @@ class Client
             return call_user_func_array([$this->request, $name], $arguments);
         }
 
-        $entity = Factory::create($name);
+        $entity = Factory::create($name, $arguments);
         if ($entity) {
             return $entity->setRequest($this->request);
         }
