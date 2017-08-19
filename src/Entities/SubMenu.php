@@ -4,34 +4,35 @@ namespace Gorilla\Entities;
 
 use Gorilla\Contracts\EntityAbstract;
 use Gorilla\Contracts\MethodType;
+use Gorilla\Request;
 
 /**
- * Class Menu
+ * Class SubMenu
  *
  * @package Gorilla\Entities
  */
-class Menu extends EntityAbstract
+class SubMenu extends EntityAbstract
 {
     /**
-     * @var string|null
+     * @var integer
      */
-    private $slug;
+    private $id;
 
     /**
      * Category constructor.
      *
-     * @param $arguments
-     *
+     * @param array   $arguments
+     * @param Request $request
      */
-    public function __construct($arguments = [])
+    public function __construct($arguments = [], Request $request)
     {
         parent::__construct($arguments);
 
         if (count($arguments) > 0) {
-            $this->slug = $arguments[0];
+            $this->id = $arguments[0];
         }
+        $this->setRequest($request);
     }
-
     /**
      * Request method type
      *
@@ -59,31 +60,6 @@ class Menu extends EntityAbstract
      */
     public function endpoint()
     {
-        return $this->buildEndpoint();
-    }
-
-    /**
-     * @return string
-     */
-    private function buildEndpoint()
-    {
-        $defaultRoutes = '/website/menus';
-
-
-        if ($this->slug) {
-            $defaultRoutes = "{$defaultRoutes}/{$this->slug}";
-        }
-
-        return $defaultRoutes;
-    }
-
-    /**
-     * @param $id
-     *
-     * @return SubMenu
-     */
-    public function sub($id)
-    {
-        return new SubMenu([$id], $this->request);
+        return "/website/menus/sub/{$this->id}";
     }
 }
