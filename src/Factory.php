@@ -4,6 +4,7 @@ namespace Gorilla;
 
 use Gorilla\Contracts\EntityInterface;
 use Gorilla\Entities\Category;
+use Gorilla\Entities\ComponentType;
 use Gorilla\Entities\Menu;
 use Gorilla\Entities\Product;
 use Gorilla\Entities\Range;
@@ -33,6 +34,8 @@ class Factory
                 return new Category($arguments);
             case 'ranges':
                 return new Range($arguments);
+            case 'componentType':
+                return new ComponentType($arguments);
         }
 
         return null;
