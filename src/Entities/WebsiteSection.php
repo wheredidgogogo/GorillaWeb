@@ -5,8 +5,32 @@ namespace Gorilla\Entities;
 use Gorilla\Contracts\EntityAbstract;
 use Gorilla\Contracts\MethodType;
 
+/**
+ * Class WebsiteSection
+ *
+ * @package Gorilla\Entities
+ */
 class WebsiteSection extends EntityAbstract
 {
+    /**
+     * @var mixed
+     */
+    private $name;
+
+    /**
+     * WebsiteSection constructor.
+     *
+     * @param array $arguments
+     */
+    public function __construct(array $arguments = [])
+    {
+        parent::__construct($arguments);
+
+        if (count($arguments) > 0) {
+            $this->name = $arguments[0];
+        }
+    }
+
 
     /**
      * Request method type
@@ -35,6 +59,21 @@ class WebsiteSection extends EntityAbstract
      */
     public function endpoint()
     {
-        return '/website/contents';
+        return $this->buildEndpoint();
+    }
+
+    /**
+     * @return string
+     */
+    private function buildEndpoint()
+    {
+        $defaultRoutes = '/website/contents';
+
+
+        if ($this->name) {
+            $defaultRoutes = "{$defaultRoutes}/{$this->name}";
+        }
+
+        return $defaultRoutes;
     }
 }
