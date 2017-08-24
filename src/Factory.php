@@ -8,6 +8,7 @@ use Gorilla\Entities\ComponentType;
 use Gorilla\Entities\Menu;
 use Gorilla\Entities\Product;
 use Gorilla\Entities\Range;
+use Gorilla\Entities\WebsiteComponent;
 use Gorilla\Entities\WebsiteSection;
 
 /**
@@ -39,6 +40,8 @@ class Factory
                 return new ComponentType($arguments);
             case 'websiteSection':
                 return new WebsiteSection($arguments);
+            case 'websiteComponent':
+                return new WebsiteComponent($arguments);
         }
 
         return null;
