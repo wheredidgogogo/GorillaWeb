@@ -36,11 +36,11 @@ class Factory
                 return new Category($arguments);
             case 'ranges':
                 return new Range($arguments);
-            case 'componentType':
+            case 'componentTypes':
                 return new ComponentType($arguments);
-            case 'websiteSection':
+            case 'websiteSections':
                 return new WebsiteSection($arguments);
-            case 'websiteComponent':
+            case 'websiteComponents':
                 return new WebsiteComponent($arguments);
         }
 
