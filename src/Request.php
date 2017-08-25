@@ -152,6 +152,8 @@ class Request implements RequestInterface
             $options['json'] = $entity->parameters();
         }
 
+        $options['headers']['X-Requested-With'] = 'XMLHttpRequest';
+
         return $options;
     }
 
