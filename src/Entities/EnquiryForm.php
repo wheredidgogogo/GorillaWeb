@@ -4,21 +4,22 @@ namespace Gorilla\Entities;
 
 use Gorilla\Contracts\EntityAbstract;
 use Gorilla\Contracts\MethodType;
+use Gorilla\Exceptions\NotFoundModelException;
 
 /**
- * Class Menu
+ * Class EnquiryForm
  *
  * @package Gorilla\Entities
  */
-class Menu extends EntityAbstract
+class EnquiryForm extends EntityAbstract
 {
     /**
-     * @var string|null
+     * @var string
      */
-    private $slug;
+    private $name;
 
     /**
-     * Category constructor.
+     * constructor.
      *
      * @param $arguments
      *
@@ -28,7 +29,7 @@ class Menu extends EntityAbstract
         parent::__construct($arguments);
 
         if (count($arguments) > 0) {
-            $this->slug = $arguments[0];
+            $this->name = $arguments[0];
         }
     }
 
@@ -67,22 +68,25 @@ class Menu extends EntityAbstract
      */
     private function buildEndpoint()
     {
-        $defaultRoutes = '/website/menus';
+        $defaultRoutes = '/website/enquiries';
 
-        if ($this->slug) {
-            $defaultRoutes = "{$defaultRoutes}/{$this->slug}";
+        if ($this->name) {
+            $defaultRoutes = "{$defaultRoutes}/{$this->name}";
         }
 
         return $defaultRoutes;
     }
 
     /**
-     * @param $id
-     *
-     * @return SubMenu
+     * @return \Gorilla\Response\JsonResponse
+     * @throws \Gorilla\Exceptions\NotFoundModelException
      */
-    public function sub($id)
+    public function save($attributes)
     {
-        return new SubMenu([$id], $this->request);
+        if ($this->name) {
+            return (new SubmitEnquiry([$this->name], $this->request))->save($attributes);
+        }
+
+        throw new NotFoundModelException();
     }
 }

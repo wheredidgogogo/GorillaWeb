@@ -5,6 +5,7 @@ namespace Gorilla;
 use Gorilla\Contracts\EntityInterface;
 use Gorilla\Entities\Category;
 use Gorilla\Entities\ComponentType;
+use Gorilla\Entities\EnquiryForm;
 use Gorilla\Entities\Menu;
 use Gorilla\Entities\Product;
 use Gorilla\Entities\Range;
@@ -45,6 +46,8 @@ class Factory
                 return new WebsiteComponent($arguments);
             case 'tribes':
                 return new Tribe($arguments);
+            case 'enquiries':
+                return new EnquiryForm($arguments);
         }
 
         return null;
