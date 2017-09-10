@@ -61,6 +61,11 @@ class SubmitEnquiry extends EntityAbstract
     private $fields = [];
 
     /**
+     * @var array
+     */
+    private $tribes = [];
+
+    /**
      * constructor.
      *
      * @param array   $arguments
@@ -104,6 +109,7 @@ class SubmitEnquiry extends EntityAbstract
             'mobile_e164' => $this->mobileE164,
             'mobile_display' => $this->mobileDisplay,
             'fields' => $this->fields,
+            'tribes' => $this->tribes,
         ];
     }
 
