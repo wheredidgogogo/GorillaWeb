@@ -104,6 +104,7 @@ class SubmitEnquiry extends EntityAbstract
             'first_name' => $this->firstName,
             'last_name' => $this->lastName,
             'email' => $this->email,
+            'ip' => $this->ip,
             'mobile_code' => $this->mobileCode,
             'mobile_country' => $this->mobileCountry,
             'mobile_e164' => $this->mobileE164,
