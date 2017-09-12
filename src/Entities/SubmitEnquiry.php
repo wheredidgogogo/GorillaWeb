@@ -131,11 +131,9 @@ class SubmitEnquiry extends EntityAbstract
     public function fill($attributes)
     {
         foreach ($attributes as $attribute => $value) {
-            if (!property_exists($this, $attribute)) {
-                throw new InvalidArgumentException("Not found {$attribute}");
+            if (property_exists($this, $attribute)) {
+                $this->{$attribute} = $value;
             }
-
-            $this->{$attribute} = $value;
         }
 
         return $this;
