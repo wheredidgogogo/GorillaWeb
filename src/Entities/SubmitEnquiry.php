@@ -66,6 +66,11 @@ class SubmitEnquiry extends EntityAbstract
     private $tribes = [];
 
     /**
+     * @var string
+     */
+    private $ip;
+
+    /**
      * constructor.
      *
      * @param array   $arguments
