@@ -38,23 +38,8 @@ class SubmitEnquiry extends EntityAbstract
     /**
      * @var string
      */
-    private $mobileCode;
-
-    /**
-     * @var string
-     */
-    private $mobileCountry;
-
-    /**
-     * @var string
-     */
-    private $mobileE164;
-
-    /**
-     * @var string
-     */
-    private $mobileDisplay;
-
+    private $mobile;
+    
     /**
      * @var array
      */
@@ -110,10 +95,7 @@ class SubmitEnquiry extends EntityAbstract
             'last_name' => $this->lastName,
             'email' => $this->email,
             'ip' => $this->ip,
-            'mobile_code' => $this->mobileCode,
-            'mobile_country' => $this->mobileCountry,
-            'mobile_e164' => $this->mobileE164,
-            'mobile_display' => $this->mobileDisplay,
+            'mobile' => $this->mobile,
             'fields' => $this->fields,
             'tribes' => $this->tribes,
         ];
