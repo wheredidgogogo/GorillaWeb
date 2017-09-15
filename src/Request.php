@@ -5,13 +5,19 @@ namespace Gorilla;
 use Gorilla\Contracts\EntityInterface;
 use Gorilla\Contracts\MethodType;
 use Gorilla\Contracts\RequestInterface;
-use Gorilla\Entities\AccessToken;
+use Gorilla\Entities\AccessToken as AccessTokenEntity;
 use Gorilla\Exceptions\ResponseException;
 use Gorilla\Response\JsonResponse;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Psr7;
+use RuntimeException;
 
+/**
+ * Class Request
+ *
+ * @package Gorilla
+ */
 class Request implements RequestInterface
 {
     /**
@@ -25,9 +31,9 @@ class Request implements RequestInterface
     private $token;
 
     /**
-     * @var null
+     * @var AccessToken
      */
-    private $accessToken = null;
+    private $accessToken;
 
     /**
      * @var array
@@ -42,10 +48,19 @@ class Request implements RequestInterface
     private $client;
 
     /**
+     * @var string
+     */
+    private $cachePath = '/tmp';
+
+    /**
      * Client constructor.
      *
      * @param $id
      * @param $token
+     *
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
      */
     public function __construct($id, $token)
     {
@@ -53,6 +68,17 @@ class Request implements RequestInterface
         $this->token = $token;
     }
 
+    /**
+     * @param $path
+     *
+     * @return $this
+     */
+    public function setCachePath($path)
+    {
+        $this->cachePath = $path;
+
+        return $this;
+    }
 
     /**
      * Set base uri
@@ -164,19 +190,36 @@ class Request implements RequestInterface
      * @param                 $options
      *
      * @return void
+     * @throws \GuzzleHttp\Exception\RequestException
+     * @throws \Gorilla\Exceptions\ResponseException
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
+     * @throws \InvalidArgumentException
      */
     private function needAccess(EntityInterface $entity, &$options)
     {
-        if ($entity instanceof AccessToken) {
+        $accessToken = new AccessToken($this->cachePath);
+
+        if ($entity instanceof AccessTokenEntity) {
             return;
         }
 
-        if (!$this->accessToken) {
-            $accessTokenEntity = new AccessToken($this->id, $this->token);
+        try {
+            $accessToken->loadAccessTokenFromCached();
+            $this->setAccessToken($accessToken);
+
+            if ($this->accessToken->hasExpired()) {
+                throw new RuntimeException('Token was expired');
+            }
+        } catch (RuntimeException $ex) {
+            $accessTokenEntity = new AccessTokenEntity($this->id, $this->token);
             $response = $this->request($accessTokenEntity);
-            $this->setAccessToken($response->json('access_token'));
+            $options = $response->json();
+            $accessToken->setup($options['access_token'], $options['expires_in']);
+            $this->setAccessToken($accessToken);
         }
 
-        $options['headers']['Authorization'] = "Bearer {$this->accessToken}";
+        $options['headers']['Authorization'] = "Bearer {$this->accessToken->getAccessToken()}";
     }
 }

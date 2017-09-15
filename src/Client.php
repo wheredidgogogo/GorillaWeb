@@ -22,6 +22,10 @@ class Client
      *
      * @param $id
      * @param $token
+     *
+     * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
      */
     public function __construct($id, $token)
     {
