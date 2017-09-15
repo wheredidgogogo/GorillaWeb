@@ -29,6 +29,11 @@ class AccessToken
     private $cacheKey = 'GORILLADASH_CACHED_KEY';
 
     /**
+     * @var \phpFastCache\Core\Pool\ExtendedCacheItemPoolInterface
+     */
+    private static $cache;
+
+    /**
      * AccessToken constructor.
      *
      * @internal param $accessToken
@@ -47,8 +52,9 @@ class AccessToken
             'path' => $cachePath,
             'ignoreSymfonyNotice' => true,
         ]);
-        $this->cache = CacheManager::getInstance('files');
-
+        if (!self::$cache) {
+            self::$cache = CacheManager::getInstance('files');
+        }
     }
 
     /**
@@ -57,7 +63,7 @@ class AccessToken
      */
     public function loadAccessTokenFromCached()
     {
-        if ($cache = $this->cache->getItem($this->cacheKey)->get()) {
+        if ($cache = self::$cache->getItem($this->cacheKey)->get()) {
 
             $this->fill($cache['accessToken'] , $cache['expires']);
 
@@ -108,12 +114,12 @@ class AccessToken
      */
     private function accessTokenCached()
     {
-        $cache = $this->cache->getItem($this->cacheKey)->set([
+        $cache = self::$cache->getItem($this->cacheKey)->set([
             'accessToken' => $this->accessToken,
             'expires' => $this->expires,
         ])->expiresAfter($this->expires);
 
-        $this->cache->save($cache);
+        self::$cache->save($cache);
     }
 
     /**
