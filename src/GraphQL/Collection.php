@@ -3,11 +3,6 @@
 namespace Gorilla\GraphQL;
 
 /**
- * Class QueryCollection
- *
- * @package Gorilla\GraphQL
- */
-/**
  * Class Collection
  *
  * @package Gorilla\GraphQL
@@ -53,6 +48,18 @@ class Collection
     public function fields(array $fields)
     {
         $this->current->fields($fields);
+
+        return $this;
+    }
+
+    /**
+     * @param array $filter
+     *
+     * @return $this
+     */
+    public function filters(array $filter)
+    {
+        $this->current->filters($filter);
 
         return $this;
     }
