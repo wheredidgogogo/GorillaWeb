@@ -2,7 +2,9 @@
 
 namespace Gorilla;
 
+use Gorilla\Entities\GraphQL;
 use Gorilla\Exceptions\NonExistMethodException;
+use Gorilla\GraphQL\Collection;
 use Gorilla\Response\JsonResponse;
 
 /**
@@ -18,6 +20,11 @@ class Client
     private $request;
 
     /**
+     * @var Collection
+     */
+    private $queries;
+
+    /**
      * Client constructor.
      *
      * @param $id
@@ -30,6 +37,12 @@ class Client
     public function __construct($id, $token)
     {
         $this->request = new Request($id, $token);
+        $this->queries = new Collection();
+    }
+
+    public function get()
+    {
+        return $this->request->request(new GraphQL($this->queries));
     }
 
     /**
@@ -41,8 +54,15 @@ class Client
      */
     public function __call($name, $arguments)
     {
+
         if (method_exists($this->request, $name)) {
             return call_user_func_array([$this->request, $name], $arguments);
+        }
+
+        if (method_exists($this->queries, $name)) {
+            call_user_func_array([$this->queries, $name], $arguments);
+
+            return $this;
         }
 
         $entity = Factory::create($name, $arguments);
