@@ -12,6 +12,11 @@ namespace Gorilla\GraphQL;
  *
  * @package Gorilla\GraphQL
  */
+/**
+ * Class Builder
+ *
+ * @package Gorilla\GraphQL
+ */
 class Builder
 {
     /**
@@ -45,7 +50,7 @@ class Builder
     public function __toString()
     {
         return <<<EOF
-    {$this->name} {$this->buildFilters()}{
+    {$this->name} {$this->buildFilters($this->getBaseFilter())}{
         {$this->buildFields($this->fields)}
     }
 EOF;
@@ -70,36 +75,41 @@ EOF;
      */
     public function filters(array $filters)
     {
-        $this->filters = $filters;
+        foreach ($filters as $key => $filter) {
+            $this->filters[] = new Filter($key, $filter);
+        }
 
         return $this;
     }
 
     /**
+     * @param $filter
+     *
      * @return string
      */
-    private function buildFilters()
+    private function buildFilters(\Illuminate\Support\Collection $filter)
     {
-        if (count($this->filters) === 0) {
+        if ($filter->isEmpty()) {
             return '';
         }
 
-        $filters = array_map(function ($key, $value) {
-            $value = json_encode($value);
-            return "{$key}: {$value}";
-        }, array_keys($this->filters), $this->filters);
-
-        $string = implode(',', $filters);
+        $string = $filter
+            ->map(function (Filter $filter) {
+                return (string)$filter;
+            })
+            ->implode(',');
 
         return "({$string}) ";
     }
 
     /**
-     * @param $fields
+     * @param      $fields
+     *
+     * @param null|string $parent
      *
      * @return string
      */
-    private function buildFields($fields)
+    private function buildFields($fields, $parent = null)
     {
         if (count($fields) === 0) {
             return '';
@@ -109,7 +119,9 @@ EOF;
 
         foreach ($fields as $key => $value) {
             if (is_string($key)) {
-                $query .= "{$key} { {$this->buildFields($value)} },".PHP_EOL;
+                $parent = $parent ? "{$parent}.{$key}" : $key;
+                $subFilters = $this->getSubFilter($parent);
+                $query .= "{$key} {$this->buildFilters($subFilters)}{ {$this->buildFields($value, $parent)} },".PHP_EOL;
                 continue;
             }
 
@@ -117,5 +129,27 @@ EOF;
         }
 
         return $query;
+    }
+
+    /**
+     * @return static
+     */
+    public function getBaseFilter()
+    {
+        return collect($this->filters)->filter(function (Filter $filter) {
+            return !$filter->isSubFilter();
+        });
+    }
+
+    /**
+     * @param $path
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getSubFilter($path)
+    {
+        return collect($this->filters)->filter(function (Filter $filter) use ($path) {
+           return $filter->getName() === $path;
+        });
     }
 }

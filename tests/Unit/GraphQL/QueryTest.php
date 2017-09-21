@@ -140,4 +140,55 @@ EOF
             (string)$query
         );
     }
+
+    /** @test */
+    public function deep_fields_with_filters_test()
+    {
+        // Arrange
+        $query = new Query('first_query');
+
+        $query->filters([
+            'media.media' => [
+                'name' => [
+                    'banner',
+                    'thumbnail',
+                ],
+            ],
+        ]);
+
+        // Act
+        $query->fields([
+            'id',
+            'name',
+            'media' => [
+                'name',
+                'type',
+                'media' => [
+                    'id',
+                    'name',
+                    'banner',
+                ],
+            ],
+        ]);
+
+        // Assert
+        $this->assertGraphQLEqual(<<<EOF
+    first_query {
+        id,
+        name,
+        media {
+            name,
+            type,
+            media (name: ["banner", "thumbnail"]) {
+                id,
+                name,
+                banner,
+            },
+        },
+    }
+EOF
+            ,
+            (string)$query
+        );
+    }
 }
