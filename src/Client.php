@@ -40,6 +40,11 @@ class Client
         $this->queries = new Collection();
     }
 
+    /**
+     * @return JsonResponse|string
+     * @throws \GuzzleHttp\Exception\RequestException
+     * @throws \Gorilla\Exceptions\ResponseException
+     */
     public function get()
     {
         return $this->request->request(new GraphQL($this->queries));

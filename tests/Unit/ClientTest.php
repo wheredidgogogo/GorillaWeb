@@ -55,7 +55,7 @@ class ClientTest extends TestCase
         $this->client->request(new getStub());
 
         /** @var Request $request */
-        $request = $this->container[0]['request'];
+        $request = end($this->container)['request'];
 
         // Assert
         $this->assertEquals(MethodType::GET, $request->getMethod());
@@ -70,7 +70,7 @@ class ClientTest extends TestCase
         // Act
         $this->client->request(new postStub());
         /** @var Request $request */
-        $request = $this->container[0]['request'];
+        $request = end($this->container)['request'];
 
         // Assert
         $this->assertEquals(MethodType::POST, $request->getMethod());
@@ -88,7 +88,7 @@ class ClientTest extends TestCase
         // Act
         $this->client->request(new postStub());
         /** @var Request $request */
-        $request = $this->container[0]['request'];
+        $request = end($this->container)['request'];
 
         // Assert
         $this->assertEquals('Bearer FooBar', $request->getHeader('Authorization')[0]);
@@ -103,7 +103,7 @@ class ClientTest extends TestCase
         // Act
         $this->client->request(new postStub());
         /** @var Request $request */
-        $request = $this->container[0]['request'];
+        $request = end($this->container)['request'];
         
         // Assert
         $this->assertEquals('https://www.google.com', $request->getUri()->__toString());
