@@ -7,6 +7,11 @@ namespace Gorilla\GraphQL;
  *
  * @package Gorilla\GraphQL
  */
+/**
+ * Class Collection
+ *
+ * @package Gorilla\GraphQL
+ */
 class Collection
 {
     /**
@@ -100,10 +105,30 @@ class Collection
         foreach ($this->queries as $query) {
             $queryString .= (string)$query;
         }
-        return <<<EOF
-            {$this->method} {
-                {$queryString}
-            }
-EOF;
+        return "{$this->method} { {$queryString} }";
+    }
+
+    /**
+     * @return array
+     */
+    public function getQueries()
+    {
+        return $this->queries;
+    }
+
+    /**
+     * @return Query
+     */
+    public function getCurrent()
+    {
+        return $this->current;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethod()
+    {
+        return $this->method;
     }
 }

@@ -32,6 +32,10 @@ class ClientTest extends TestCase
         parent::setUp();
 
         $mock = new MockHandler([
+            new Response(201, [], json_encode([
+                'access_token' => 'FooBar',
+                'expires_in' => time() + 100000
+            ])),
             new Response(201),
         ]);
         $handler = HandlerStack::create($mock);
@@ -47,9 +51,6 @@ class ClientTest extends TestCase
     /** @test */
     public function get_parameters_builder()
     {
-        // Arrange
-        $this->client->setAccessToken('fake access token');
-
         // Act
         $this->client->request(new getStub());
 
@@ -65,7 +66,6 @@ class ClientTest extends TestCase
     public function post_parameters_builder()
     {
         // Arrange
-        $this->client->setAccessToken('fake access token');
 
         // Act
         $this->client->request(new postStub());
@@ -84,7 +84,6 @@ class ClientTest extends TestCase
     public function access_token_builder()
     {
         // Arrange
-        $this->client->setAccessToken('fake access token');
 
         // Act
         $this->client->request(new postStub());
@@ -92,30 +91,6 @@ class ClientTest extends TestCase
         $request = $this->container[0]['request'];
 
         // Assert
-        $this->assertEquals('Bearer fake access token', $request->getHeader('Authorization')[0]);
-    }
-
-    /** @test */
-    public function auto_get_access_token_if_token_is_missing()
-    {
-        // Arrange
-        $mock = new MockHandler([
-            new Response(201, [], json_encode(['access_token' => 'FooBar'])),
-            new Response(201),
-        ]);
-        $handler = HandlerStack::create($mock);
-        $container = [];
-        $history = Middleware::history($container);
-        $handler->push($history);
-
-        $this->client->setHandler($handler);
-
-        // Act
-        $this->client->request(new postStub());
-        $request = $container[1]['request'];
-
-        // Assert
-        $this->assertCount(2, $container);
         $this->assertEquals('Bearer FooBar', $request->getHeader('Authorization')[0]);
     }
 
@@ -123,7 +98,6 @@ class ClientTest extends TestCase
     public function change_base_uri()
     {
         // Arrange
-        $this->client->setAccessToken('Fake token');
         $this->client->setBaseUri('https://www.google.com');
 
         // Act

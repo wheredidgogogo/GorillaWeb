@@ -22,7 +22,7 @@ class Builder
     /**
      * @var array
      */
-    protected $fields;
+    protected $fields = [];
 
     /**
      * @var array
@@ -46,11 +46,7 @@ class Builder
     {
         $fields = implode(',', $this->fields);
 
-        return <<<EOF
-            {$this->name} {$this->buildFilters()} {
-                {$fields}
-            }
-EOF;
+        return "{$this->name} {$this->buildFilters()} { {$fields} }";
     }
 
     /**
