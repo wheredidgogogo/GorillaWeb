@@ -50,6 +50,32 @@ EOF
     }
 
     /** @test */
+    public function filter_array_test()
+    {
+        // Arrange
+        $query = new Query('first_query');
+
+        // Act
+        $query->filters([
+            'id' => '1',
+            'name' => [
+                'homepage',
+                'contact'
+            ],
+        ]);
+
+        // Assert
+        $this->assertGraphQLEqual(<<<EOF
+    first_query (id: "1",name: ["homepage", "contact"]) {
+        
+    }
+EOF
+            ,
+            (string)$query
+        );
+    }
+
+    /** @test */
     public function field_test()
     {
         // Arrange

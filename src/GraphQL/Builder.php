@@ -85,7 +85,8 @@ EOF;
         }
 
         $filters = array_map(function ($key, $value) {
-            return "{$key}: \"${value}\"";
+            $value = json_encode($value);
+            return "{$key}: {$value}";
         }, array_keys($this->filters), $this->filters);
 
         $string = implode(',', $filters);
