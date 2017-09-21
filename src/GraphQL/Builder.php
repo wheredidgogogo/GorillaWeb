@@ -44,9 +44,11 @@ class Builder
      */
     public function __toString()
     {
-        $fields = implode(',', $this->fields);
-
-        return "{$this->name} {$this->buildFilters()} { {$fields} }";
+        return <<<EOF
+    {$this->name} {$this->buildFilters()}{
+        {$this->buildFields($this->fields)}
+    }
+EOF;
     }
 
     /**
@@ -88,6 +90,31 @@ class Builder
 
         $string = implode(',', $filters);
 
-        return "({$string})";
+        return "({$string}) ";
+    }
+
+    /**
+     * @param $fields
+     *
+     * @return string
+     */
+    private function buildFields($fields)
+    {
+        if (count($fields) === 0) {
+            return '';
+        }
+
+        $query = '';
+
+        foreach ($fields as $key => $value) {
+            if (is_string($key)) {
+                $query .= "{$key} { {$this->buildFields($value)} },".PHP_EOL;
+                continue;
+            }
+
+            $query .= "{$value},".PHP_EOL;
+        }
+
+        return $query;
     }
 }

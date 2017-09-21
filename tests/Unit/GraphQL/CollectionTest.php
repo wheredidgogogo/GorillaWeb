@@ -4,9 +4,12 @@ namespace Tests\Unit\GraphQL;
 
 use Gorilla\GraphQL\Collection;
 use PHPUnit\Framework\TestCase;
+use Tests\GraphQLAssert;
 
 class CollectionTest extends TestCase
 {
+    use GraphQLAssert;
+
     /** @test */
     public function add_query_test()
     {
@@ -19,45 +22,6 @@ class CollectionTest extends TestCase
         // Assert
         $this->assertCount(1, $collection->getQueries());
         $this->assertEquals('query', $collection->getMethod());
-        $this->assertEquals('my_first_query  {  }', $collection->getCurrent()->__toString());
-    }
-
-    /** @test */
-    public function add_filter_test()
-    {
-        // Arrange
-        $collection = new Collection();
-        $collection->query('my_first_query');
-
-        // Act
-        $collection->filters([
-            'id' => '1',
-            'name' => 'name',
-        ]);
-
-        // Assert
-        $this->assertCount(1, $collection->getQueries());
-        $this->assertEquals('query', $collection->getMethod());
-        $this->assertEquals('my_first_query (id: "1",name: "name") {  }', $collection->getCurrent()->__toString());
-    }
-
-    /** @test */
-    public function add_level_1_fields_test()
-    {
-        // Arrange
-        $collection = new Collection();
-        $collection->query('my_first_query');
-
-        // Act
-        $collection->fields([
-            'first_field',
-            'second_field',
-        ]);
-
-        // Assert
-        $this->assertCount(1, $collection->getQueries());
-        $this->assertEquals('query', $collection->getMethod());
-        $this->assertEquals('my_first_query  { first_field,second_field }', $collection->getCurrent()->__toString());
     }
 
     /** @test */
@@ -93,11 +57,83 @@ class CollectionTest extends TestCase
             ->fields([
                 'first_field',
                 'second_field',
+                'media' => [
+                    'id',
+                    'name',
+                ],
             ]);
 
         // Assert
-        $this->assertEquals(
-            'query { my_first_query (name: "name") { first_field,second_field } }',
+        $this->assertGraphQLEqual(<<<EOF
+    query {
+        my_first_query (name: "name") {
+            first_field,
+            second_field,
+            media {
+                id,
+                name,
+            },
+        }
+    }
+EOF
+,
+            (string)$collection
+        );
+    }
+
+    /** @test */
+    public function multiple_queries_test()
+    {
+        // Arrange
+        $collection = new Collection();
+
+        // Act
+        $collection->query('my_first_query')
+            ->filters([
+                'name' => 'name',
+            ])
+            ->fields([
+                'first_field',
+                'second_field',
+                'media' => [
+                    'id',
+                    'name',
+                ],
+            ]);
+
+        $collection->query('second_query')
+            ->fields([
+                'first_field',
+                'second_field',
+                'media' => [
+                    'id',
+                    'name',
+                ],
+            ]);
+
+        // Assert
+        $this->assertGraphQLEqual(<<<EOF
+    query {
+        my_first_query (name: "name") {
+            first_field,
+            second_field,
+            media {
+                id,
+                name,
+            },
+        }
+        
+        second_query {
+            first_field,
+            second_field,
+            media {
+                id,
+                name,
+            },
+        }
+    }
+EOF
+            ,
             (string)$collection
         );
     }
