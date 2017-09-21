@@ -148,6 +148,11 @@ EOF
         $query = new Query('first_query');
 
         $query->filters([
+            'media' => [
+                'name' => [
+                    'Top banner',
+                ],
+            ],
             'media.media' => [
                 'name' => [
                     'banner',
@@ -176,7 +181,7 @@ EOF
     first_query {
         id,
         name,
-        media {
+        media (name: ["Top banner"]) {
             name,
             type,
             media (name: ["banner", "thumbnail"]) {
