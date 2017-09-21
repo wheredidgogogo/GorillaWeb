@@ -158,7 +158,7 @@ class getStub implements EntityInterface
      */
     public function endpoint()
     {
-        return '';
+        return '/';
     }
 
     /**

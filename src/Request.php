@@ -215,8 +215,8 @@ class Request implements RequestInterface
         } catch (RuntimeException $ex) {
             $accessTokenEntity = new AccessTokenEntity($this->id, $this->token);
             $response = $this->request($accessTokenEntity);
-            $options = $response->json();
-            $accessToken->setup($options['access_token'], $options['expires_in']);
+            $token = $response->json();
+            $accessToken->setup($token['access_token'], $token['expires_in']);
             $this->setAccessToken($accessToken);
         }
 
