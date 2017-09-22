@@ -32,6 +32,9 @@ class Collection
      */
     private $current;
 
+    /**
+     * Collection constructor.
+     */
     public function __construct()
     {
         $this->queries = new BaseCollection();
@@ -119,7 +122,7 @@ class Collection
     /**
      * @return BaseCollection
      */
-    public function getQueries(): \Illuminate\Support\Collection
+    public function getQueries()
     {
         return $this->queries;
     }
@@ -129,7 +132,7 @@ class Collection
      *
      * @return Query|null
      */
-    public function find($name): ?Query
+    public function find($name)
     {
         return $this->queries->filter(function ($query) use ($name) {
             return $query->getName() === $name;
@@ -139,7 +142,7 @@ class Collection
     /**
      * @return Query|null
      */
-    public function getCurrent(): ?Query
+    public function getCurrent()
     {
         return $this->current;
     }
@@ -147,7 +150,7 @@ class Collection
     /**
      * @return string
      */
-    public function getMethod(): string
+    public function getMethod()
     {
         return $this->method;
     }
@@ -155,7 +158,7 @@ class Collection
     /**
      * @param $key
      */
-    public function removeQuery($key): void
+    public function removeQuery($key)
     {
         $this->queries = $this->queries->reject(function (Query $query) use ($key) {
             return $query->getName() === $key;

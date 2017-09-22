@@ -42,6 +42,8 @@ interface CanCached
     /**
      * Save cache
      *
+     * @param $data
+     *
      * @return mixed
      */
     public function saveCache($data);
