@@ -131,7 +131,8 @@ EOF;
             if (is_string($key)) {
                 $parent = $parent ? "{$parent}.{$key}" : $key;
                 $subFilters = $this->getSubFilter($parent);
-                $query .= "{$key} {$this->buildFilters($subFilters)}{ {$this->buildFields(collect($value), $parent)} },".PHP_EOL;
+                $query .= "{$key} {$this->buildFilters($subFilters)}{ {$this->buildFields(collect($value), $parent)} },"
+                    .PHP_EOL;
                 return true;
             }
 
