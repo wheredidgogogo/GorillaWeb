@@ -154,7 +154,7 @@ EOF;
     public function getSubFilter($path)
     {
         return collect($this->filters)->filter(function (Filter $filter) use ($path) {
-           return $filter->getName() === $path;
+            return $filter->getName() === $path;
         });
     }
 

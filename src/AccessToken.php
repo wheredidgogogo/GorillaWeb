@@ -54,8 +54,7 @@ class AccessToken
     public function loadAccessTokenFromCached()
     {
         if ($cache = self::$cache->getItem($this->cacheKey)->get()) {
-
-            $this->fill($cache['accessToken'] , $cache['expires']);
+            $this->fill($cache['accessToken'], $cache['expires']);
 
             return true;
         }

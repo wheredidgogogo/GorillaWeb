@@ -9,5 +9,4 @@ namespace Gorilla\GraphQL;
  */
 class Query extends Builder
 {
-
 }

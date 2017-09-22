@@ -7,6 +7,7 @@ php:
 install:
   - travis_retry composer install --prefer-dist
 script:
+  - vendor/bin/phpcs src --standard=psr2
   - vendor/bin/phpunit
 cache:
   directories:

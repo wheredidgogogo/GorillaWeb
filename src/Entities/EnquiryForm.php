@@ -84,7 +84,7 @@ class EnquiryForm extends EntityAbstract
     public function save($attributes)
     {
         if ($this->name) {
-            return (new SubmitEnquiry([$this->name], $this->request))->save($attributes);
+            return (new SubmitEnquiry($this->request, [$this->name]))->save($attributes);
         }
 
         throw new NotFoundModelException();

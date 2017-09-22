@@ -3,7 +3,6 @@
 
 namespace Gorilla\Entities;
 
-
 use Gorilla\Contracts\EntityAbstract;
 use Gorilla\Contracts\MethodType;
 
