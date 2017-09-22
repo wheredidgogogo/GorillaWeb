@@ -12,6 +12,7 @@ use Gorilla\Response\JsonResponse;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Psr7;
+use Illuminate\Support\Arr;
 use phpFastCache\CacheManager;
 use RuntimeException;
 
@@ -150,7 +151,7 @@ class Request implements RequestInterface
             $response = $this->client->request($entity->method(), $entity->endpoint(), $options);
             $data = json_decode($response->getBody()->getContents(), true);
             if ($entity instanceof CanCached) {
-                $entity->saveCache($data);
+                $entity->saveCache(Arr::get($data, 'data', []));
                 $data = $entity->merge($data);
             }
 

@@ -313,8 +313,10 @@ class GraphQLCacheTest extends TestCase
 
         $request = new Request('id', 'token');
         $request->setHandler($this->getMockHandler([
-            'my_first_query' => 'first_query',
-            'second_query' => 'response',
+            'data' => [
+                'my_first_query' => 'first_query',
+                'second_query' => 'response',
+            ],
         ]));
 
         $request->request($graphQL);
