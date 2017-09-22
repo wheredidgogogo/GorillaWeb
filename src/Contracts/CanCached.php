@@ -9,4 +9,6 @@ interface CanCached
     public function getCached();
 
     public function merge(array $array);
+
+    public function allInCached();
 }

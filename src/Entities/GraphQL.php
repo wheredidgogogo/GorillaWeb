@@ -78,4 +78,12 @@ class GraphQL extends EntityAbstract implements CanCached
             $this->collection->removeQuery($key);
         })->toArray();
     }
+
+    /**
+     * @return bool
+     */
+    public function allInCached()
+    {
+        return count($this->collection->getQueries()) === 0;
+    }
 }

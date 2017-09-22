@@ -138,6 +138,9 @@ class Request implements RequestInterface
     {
         if ($entity instanceof CanCached) {
             $entity->getCached();
+            if ($entity->allInCached()) {
+                return new JsonResponse($entity->merge([]));
+            }
         }
 
         if (!$this->client) {
