@@ -23,9 +23,11 @@ trait Cacheable
     protected $cacheTime = 0;
 
     /**
+     * Cache file
+     *
      * @var array
      */
-    private $data = [];
+    private $cacheData = [];
 
     /**
      *
@@ -87,14 +89,23 @@ trait Cacheable
      */
     public function merge(array $array)
     {
-        return array_merge_recursive($this->data, $array);
+        return array_merge_recursive($this->cacheData, $array);
     }
 
     /**
      * @return array
      */
-    public function getData()
+    public function getCacheData()
     {
-        return $this->data;
+        return $this->cacheData;
+    }
+
+    /**
+     *
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     */
+    public function saveCacheData($key, $value)
+    {
+        return self::$cache->save(self::$cache->getItem($key)->set($value));
     }
 }

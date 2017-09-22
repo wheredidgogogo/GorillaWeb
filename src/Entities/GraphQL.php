@@ -36,7 +36,7 @@ class GraphQL extends EntityAbstract implements CanCached
      *
      * @return string
      */
-    public function method()
+    public function method(): string
     {
         return MethodType::POST;
     }
@@ -46,7 +46,7 @@ class GraphQL extends EntityAbstract implements CanCached
      *
      * @return array
      */
-    public function parameters()
+    public function parameters(): array
     {
         return [
             'query' => (string)$this->collection,
@@ -58,32 +58,51 @@ class GraphQL extends EntityAbstract implements CanCached
      *
      * @return string
      */
-    public function endpoint()
+    public function endpoint(): string
     {
         return '/graphql';
     }
 
     /**
-     * @return \Illuminate\Support\Collection;
+     * @return array
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
      */
-    public function getCached()
+    public function getCached(): array
     {
-        $this->data = collect($this->collection->getQueries())->mapWithKeys(function (Query $query) {
-            return [
-                $query->getName() => $this->getCacheContent($query->cacheKey()),
-            ];
-        })->filter(function ($value) {
-            return $value;
-        })->each(function ($value, $key) {
-            $this->collection->removeQuery($key);
-        })->toArray();
+        return $this->cacheData = collect($this->collection->getQueries())
+            ->mapWithKeys(function (Query $query) {
+                return [
+                    $query->getName() => $this->getCacheContent($query->cacheKey()),
+                ];
+            })->filter(function ($value) {
+                return $value;
+            })->each(function ($value, $key) {
+                $this->collection->removeQuery($key);
+            })->toArray();
     }
 
     /**
      * @return bool
      */
-    public function allInCached()
+    public function allInCached(): bool
     {
         return count($this->collection->getQueries()) === 0;
+    }
+
+    /**
+     * Save cache
+     *
+     * @return mixed
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     */
+    public function saveCache($data)
+    {
+        collect($data)->each(function ($value, $key) {
+            /** @var Query $query */
+            $query = $this->collection->find($key);
+            if ($query) {
+                $this->saveCacheData($query->cacheKey(), $value);
+            }
+        });
     }
 }

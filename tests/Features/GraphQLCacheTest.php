@@ -69,7 +69,7 @@ class GraphQLCacheTest extends TestCase
 
         // Act
         $graphQL->getCached();
-        $response = collect($graphQL->getData());
+        $response = collect($graphQL->getCacheData());
 
         // Assert
         $this->assertCount(0 , $collection->getQueries());
@@ -116,7 +116,7 @@ class GraphQLCacheTest extends TestCase
         $graphQL->getCached();
 
         // Assert
-        $this->assertCount(1, $graphQL->getData());
+        $this->assertCount(1, $graphQL->getCacheData());
         $this->assertCount(1, $collection->getQueries());
     }
 
@@ -272,6 +272,51 @@ class GraphQLCacheTest extends TestCase
             $cloneQueries[0]->getName() => $cloneQueries[0]->cacheKey(),
             $cloneQueries[1]->getName() => $cloneQueries[1]->cacheKey(),
         ], $response->json());
+    }
+
+    /** @test */
+    public function get_response_and_save_cache()
+    {
+        // Arrange
+        $collection = new Collection();
+        $collection->query('my_first_query')
+            ->filters([
+                'name' => 'name',
+            ])
+            ->fields([
+                'first_field',
+                'second_field',
+                'media' => [
+                    'id',
+                    'name',
+                ],
+            ])
+            ->query('second_query')
+            ->fields([
+                'first_field',
+                'second_field',
+                'media' => [
+                    'id',
+                    'name',
+                ],
+                'bar',
+                'foo',
+            ]);
+
+        $graphQL = new GraphQL($collection);
+        $graphQL->cache();
+
+        $request = new Request('id', 'token');
+        $request->setHandler($this->getMockHandler([
+            'my_first_query' => 'first_query',
+            'second_query' => 'response',
+        ]));
+
+        $request->request($graphQL);
+
+        foreach ($collection->getQueries() as $query) {
+            $this->assertTrue(self::$cache->hasItem($query->cacheKey()));
+        }
     }
 
     private function buildCache($array, $expires)

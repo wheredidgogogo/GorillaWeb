@@ -117,6 +117,18 @@ class Collection
     }
 
     /**
+     * @param $name
+     *
+     * @return Query|null
+     */
+    public function find($name)
+    {
+        return collect($this->queries)->filter(function ($query) use ($name) {
+            return $query->getName() === $name;
+        })->first();
+    }
+
+    /**
      * @return Query
      */
     public function getCurrent()
