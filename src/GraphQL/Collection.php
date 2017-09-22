@@ -109,7 +109,7 @@ class Collection
     }
 
     /**
-     * @return array
+     * @return array|Query[]
      */
     public function getQueries()
     {
@@ -130,5 +130,15 @@ class Collection
     public function getMethod()
     {
         return $this->method;
+    }
+
+    /**
+     * @param $key
+     */
+    public function removeQuery($key)
+    {
+        $this->queries = collect($this->queries)->reject(function (Query $query) use ($key) {
+            return $query->getName() === $key;
+        })->toArray();
     }
 }

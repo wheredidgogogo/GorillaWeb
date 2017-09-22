@@ -6,6 +6,7 @@ use Gorilla\Entities\GraphQL;
 use Gorilla\Exceptions\NonExistMethodException;
 use Gorilla\GraphQL\Collection;
 use Gorilla\Response\JsonResponse;
+use phpFastCache\CacheManager;
 
 /**
  * Class Client
@@ -25,6 +26,11 @@ class Client
     private $queries;
 
     /**
+     * @var string
+     */
+    private $cachePath = '/tmp';
+
+    /**
      * Client constructor.
      *
      * @param $id
@@ -38,16 +44,26 @@ class Client
     {
         $this->request = new Request($id, $token);
         $this->queries = new Collection();
+        CacheManager::setDefaultConfig([
+            'path' => $this->cachePath,
+            'ignoreSymfonyNotice' => true,
+        ]);
     }
 
     /**
      * @return JsonResponse|string
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
+     * @throws \InvalidArgumentException
      * @throws \GuzzleHttp\Exception\RequestException
      * @throws \Gorilla\Exceptions\ResponseException
      */
     public function get()
     {
-        return $this->request->request(new GraphQL($this->queries));
+        $graphQL = new GraphQL($this->queries);
+
+        return $this->request->request($graphQL);
     }
 
     /**
@@ -59,7 +75,6 @@ class Client
      */
     public function __call($name, $arguments)
     {
-
         if (method_exists($this->request, $name)) {
             return call_user_func_array([$this->request, $name], $arguments);
         }
@@ -76,5 +91,19 @@ class Client
         }
 
         throw new NonExistMethodException("Sorry, we didn't find ${name}");
+    }
+
+    /**
+     * @param $path
+     *
+     * @return $this
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     */
+    public function setCachePath($path)
+    {
+        $this->cachePath = $path;
+        CacheManager::setDefaultConfig('path', $path);
+
+        return $this;
     }
 }

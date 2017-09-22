@@ -17,6 +17,11 @@ namespace Gorilla\GraphQL;
  *
  * @package Gorilla\GraphQL
  */
+/**
+ * Class Builder
+ *
+ * @package Gorilla\GraphQL
+ */
 class Builder
 {
     /**
@@ -151,5 +156,21 @@ EOF;
         return collect($this->filters)->filter(function (Filter $filter) use ($path) {
            return $filter->getName() === $path;
         });
+    }
+
+    /**
+     * @return string
+     */
+    public function cacheKey()
+    {
+        return md5((string)$this);
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 }

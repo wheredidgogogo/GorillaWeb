@@ -2,6 +2,7 @@
 
 namespace Gorilla;
 
+use Gorilla\Contracts\CanCached;
 use Gorilla\Contracts\EntityInterface;
 use Gorilla\Contracts\MethodType;
 use Gorilla\Contracts\RequestInterface;
@@ -11,6 +12,7 @@ use Gorilla\Response\JsonResponse;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Psr7;
+use phpFastCache\CacheManager;
 use RuntimeException;
 
 /**
@@ -69,18 +71,6 @@ class Request implements RequestInterface
     }
 
     /**
-     * @param $path
-     *
-     * @return $this
-     */
-    public function setCachePath($path)
-    {
-        $this->cachePath = $path;
-
-        return $this;
-    }
-
-    /**
      * Set base uri
      *
      * @param $uri
@@ -136,11 +126,20 @@ class Request implements RequestInterface
      * @param EntityInterface $entity
      *
      * @return JsonResponse|string
+     * @throws \RuntimeException
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
+     * @throws \InvalidArgumentException
      * @throws \Gorilla\Exceptions\ResponseException
      * @throws \GuzzleHttp\Exception\RequestException
      */
     public function request(EntityInterface $entity)
     {
+        if ($entity instanceof CanCached) {
+            $entity->getCached();
+        }
+
         if (!$this->client) {
             $this->createClient();
         }
@@ -151,8 +150,12 @@ class Request implements RequestInterface
 
         try {
             $response = $this->client->request($entity->method(), $entity->endpoint(), $options);
+            $data = json_decode($response->getBody()->getContents(), true);
+            if ($entity instanceof CanCached) {
+                $data = $entity->merge($data);
+            }
 
-            return new JsonResponse($response);
+            return new JsonResponse($data);
         } catch (RequestException $ex) {
             if ($ex->hasResponse()) {
                 throw new ResponseException(Psr7\str($ex->getResponse()));
@@ -199,7 +202,7 @@ class Request implements RequestInterface
      */
     private function needAccess(EntityInterface $entity, &$options)
     {
-        $accessToken = new AccessToken($this->cachePath);
+        $accessToken = new AccessToken();
 
         if ($entity instanceof AccessTokenEntity) {
             return;

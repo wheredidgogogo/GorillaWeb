@@ -2,17 +2,29 @@
 
 namespace Gorilla\Entities;
 
+use Gorilla\Contracts\CanCached;
 use Gorilla\Contracts\EntityAbstract;
 use Gorilla\Contracts\MethodType;
 use Gorilla\GraphQL\Collection;
+use Gorilla\GraphQL\Query;
+use Gorilla\Traits\Cacheable;
 
-class GraphQL extends EntityAbstract
+class GraphQL extends EntityAbstract implements CanCached
 {
+    use Cacheable {
+        getCached as getCacheContent;
+    }
+
     /**
      * @var Collection
      */
     private $collection;
 
+    /**
+     * GraphQL constructor.
+     *
+     * @param Collection $collection
+     */
     public function __construct(Collection $collection)
     {
         parent::__construct([]);
@@ -49,5 +61,21 @@ class GraphQL extends EntityAbstract
     public function endpoint()
     {
         return '/graphql';
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection;
+     */
+    public function getCached()
+    {
+        $this->data = collect($this->collection->getQueries())->mapWithKeys(function (Query $query) {
+            return [
+                $query->getName() => $this->getCacheContent($query->cacheKey()),
+            ];
+        })->filter(function ($value) {
+            return $value;
+        })->each(function ($value, $key) {
+            $this->collection->removeQuery($key);
+        })->toArray();
     }
 }

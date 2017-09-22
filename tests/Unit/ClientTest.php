@@ -34,7 +34,7 @@ class ClientTest extends TestCase
         $mock = new MockHandler([
             new Response(201, [], json_encode([
                 'access_token' => 'FooBar',
-                'expires_in' => time() + 100000
+                'expires_in' => 100000,
             ])),
             new Response(201),
         ]);
@@ -46,6 +46,7 @@ class ClientTest extends TestCase
 
         $this->client = new Client('fakeId', 'fakeToken');
         $this->client->setHandler($handler);
+        $this->client->setCachePath(dirname(__DIR__).'/cache');
     }
 
     /** @test */

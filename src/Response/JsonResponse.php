@@ -14,16 +14,18 @@ class JsonResponse
     /**
      * @var Response
      */
-    private $response;
+    private $data;
 
     /**
      * JsonResponse constructor.
      *
-     * @param Response $response
+     * @param $data
+     *
+     * @internal param Response $response
      */
-    public function __construct(Response $response)
+    public function __construct($data)
     {
-        $this->response = $response;
+        $this->data = $data;
     }
 
     /**
@@ -33,8 +35,7 @@ class JsonResponse
      */
     public function json($name = null)
     {
-        $json = json_decode($this->response->getBody()->getContents(), true);
-        return $name ? $json[$name] : $json;
+        return $name ? $this->data[$name] : $this->data;
     }
 
     /**
