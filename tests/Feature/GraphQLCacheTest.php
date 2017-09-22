@@ -161,7 +161,9 @@ class GraphQLCacheTest extends TestCase
 
         $request = new Request('id', 'token');
         $request->setHandler($this->getMockHandler([
-            'second_query' => 'response',
+            'data' => [
+                'second_query' => 'response',
+            ],
         ]));
 
         // Act
@@ -169,8 +171,10 @@ class GraphQLCacheTest extends TestCase
 
         // Assert
         $this->assertArraySubset([
-            $cloneQueries->get(0)->getName() => $cloneQueries->get(0)->cacheKey(),
-            $cloneQueries->get(1)->getName() => 'response',
+            'data' => [
+                $cloneQueries->get(0)->getName() => $cloneQueries->get(0)->cacheKey(),
+                $cloneQueries->get(1)->getName() => 'response',
+            ],
         ], $response->json());
     }
 
@@ -211,8 +215,10 @@ class GraphQLCacheTest extends TestCase
 
         $request = new Request('id', 'token');
         $request->setHandler($this->getMockHandler([
-            'my_first_query' => 'response',
-            'second_query' => 'response',
+            'data' => [
+                'my_first_query' => 'response',
+                'second_query' => 'response',
+            ],
         ]));
 
         // Act
@@ -220,8 +226,10 @@ class GraphQLCacheTest extends TestCase
 
         // Assert
         $this->assertArraySubset([
-            $cloneQueries->get(0)->getName() => 'response',
-            $cloneQueries->get(1)->getName() => 'response',
+            'data' => [
+                $cloneQueries->get(0)->getName() => 'response',
+                $cloneQueries->get(1)->getName() => 'response',
+            ],
         ], $response->json());
     }
 
@@ -265,7 +273,9 @@ class GraphQLCacheTest extends TestCase
 
         $request = new Request('id', 'token');
         $request->setHandler($this->getMockHandler([
-            'second_query' => 'response',
+            'data' => [
+                'second_query' => 'response',
+            ],
         ]));
 
         // Act
@@ -273,8 +283,10 @@ class GraphQLCacheTest extends TestCase
 
         // Assert
         $this->assertArraySubset([
-            $cloneQueries->get(0)->getName() => $cloneQueries->get(0)->cacheKey(),
-            $cloneQueries->get(1)->getName() => $cloneQueries->get(1)->cacheKey(),
+            'data' => [
+                $cloneQueries->get(0)->getName() => $cloneQueries->get(0)->cacheKey(),
+                $cloneQueries->get(1)->getName() => $cloneQueries->get(1)->cacheKey(),
+            ],
         ], $response->json());
     }
 
@@ -360,8 +372,10 @@ class GraphQLCacheTest extends TestCase
 
         $request = new Request('id', 'token');
         $request->setHandler($this->getMockHandler([
-            'my_first_query' => 'first_query',
-            'second_query' => 'response',
+            'data' => [
+                'my_first_query' => 'first_query',
+                'second_query' => 'response',
+            ],
         ]));
 
         $request->request($graphQL);

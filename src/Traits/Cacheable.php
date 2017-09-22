@@ -89,7 +89,7 @@ trait Cacheable
      */
     public function merge(array $array)
     {
-        return array_merge_recursive($this->cacheData, $array);
+        return array_merge_recursive(['data' => $this->cacheData], $array);
     }
 
     /**
