@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Features;
+namespace Tests\Feature;
 
 use DateTimeInterface;
 use Gorilla\Entities\GraphQL;
@@ -29,13 +29,13 @@ class GraphQLCacheTest extends TestCase
                 'ignoreSymfonyNotice' => true,
             ]);
             self::$cache = CacheManager::getInstance('files');
-            self::$cache->clear();
         }
     }
 
     /** @test */
     public function get_data_from_cached()
     {
+        self::$cache->clear();
         // Arrange
         $collection = new Collection();
         $collection->query('my_first_query')
@@ -74,13 +74,14 @@ class GraphQLCacheTest extends TestCase
         // Assert
         $this->assertCount(0 , $collection->getQueries());
         foreach ($cloneQueries as $query) {
-            $this->assertEquals(['result' => $query->cacheKey()], $response->get($query->getName()));
+            $this->assertEquals($query->cacheKey(), $response->get($query->getName()));
         }
     }
 
     /** @test */
     public function get_cache_but_one_query_was_expired()
     {
+        self::$cache->clear();
         // Arrange
         $collection = new Collection();
         $collection->query('my_first_query')
@@ -110,8 +111,8 @@ class GraphQLCacheTest extends TestCase
         $graphQL = new GraphQL($collection);
         $graphQL->cache();
 
-        $this->buildCache([$collection->getQueries()[0]], 6000);
-        $this->buildCache([$collection->getQueries()[1]], (new \DateTime('now'))->modify('-1 week'));
+        $this->buildCache(collect([$collection->getQueries()->get(0)]), 6000);
+        $this->buildCache(collect([$collection->getQueries()->get(1)]), (new \DateTime('now'))->modify('-1 week'));
 
         $graphQL->getCached();
 
@@ -123,6 +124,7 @@ class GraphQLCacheTest extends TestCase
     /** @test */
     public function merge_cache_and_response_data()
     {
+        self::$cache->clear();
         // Arrange
         $collection = new Collection();
         $collection->query('my_first_query')
@@ -154,8 +156,8 @@ class GraphQLCacheTest extends TestCase
         /** @var Query[] $cloneQueries */
         $cloneQueries = $collection->getQueries();
 
-        $this->buildCache([$collection->getQueries()[0]], 6000);
-        $this->buildCache([$collection->getQueries()[1]], (new \DateTime('now'))->modify('-1 week'));
+        $this->buildCache(collect([$collection->getQueries()->get(0)]), 6000);
+        $this->buildCache(collect([$collection->getQueries()->get(1)]), (new \DateTime('now'))->modify('-1 week'));
 
         $request = new Request('id', 'token');
         $request->setHandler($this->getMockHandler([
@@ -167,14 +169,15 @@ class GraphQLCacheTest extends TestCase
 
         // Assert
         $this->assertArraySubset([
-            $cloneQueries[0]->getName() => $cloneQueries[0]->cacheKey(),
-            $cloneQueries[1]->getName() => 'response',
+            $cloneQueries->get(0)->getName() => $cloneQueries->get(0)->cacheKey(),
+            $cloneQueries->get(1)->getName() => 'response',
         ], $response->json());
     }
 
     /** @test */
     public function get_response_without_cache()
     {
+        self::$cache->clear();
         // Arrange
         $collection = new Collection();
         $collection->query('my_first_query')
@@ -217,14 +220,15 @@ class GraphQLCacheTest extends TestCase
 
         // Assert
         $this->assertArraySubset([
-            $cloneQueries[0]->getName() => 'response',
-            $cloneQueries[1]->getName() => 'response',
+            $cloneQueries->get(0)->getName() => 'response',
+            $cloneQueries->get(1)->getName() => 'response',
         ], $response->json());
     }
 
     /** @test */
     public function get_response_all_in_cache()
     {
+        self::$cache->clear();
         // Arrange
         $collection = new Collection();
         $collection->query('my_first_query')
@@ -256,8 +260,8 @@ class GraphQLCacheTest extends TestCase
         /** @var Query[] $cloneQueries */
         $cloneQueries = $collection->getQueries();
 
-        $this->buildCache([$collection->getQueries()[0]], 6000);
-        $this->buildCache([$collection->getQueries()[1]], 6000);
+        $this->buildCache(collect([$collection->getQueries()->get(0)]), 6000);
+        $this->buildCache(collect([$collection->getQueries()->get(1)]), 6000);
 
         $request = new Request('id', 'token');
         $request->setHandler($this->getMockHandler([
@@ -269,14 +273,15 @@ class GraphQLCacheTest extends TestCase
 
         // Assert
         $this->assertArraySubset([
-            $cloneQueries[0]->getName() => $cloneQueries[0]->cacheKey(),
-            $cloneQueries[1]->getName() => $cloneQueries[1]->cacheKey(),
+            $cloneQueries->get(0)->getName() => $cloneQueries->get(0)->cacheKey(),
+            $cloneQueries->get(1)->getName() => $cloneQueries->get(1)->cacheKey(),
         ], $response->json());
     }
 
     /** @test */
     public function get_response_and_save_cache()
     {
+        self::$cache->clear();
         // Arrange
         $collection = new Collection();
         $collection->query('my_first_query')

@@ -159,6 +159,6 @@ class Collection
     {
         $this->queries = $this->queries->reject(function (Query $query) use ($key) {
             return $query->getName() === $key;
-        })->toArray();
+        });
     }
 }
