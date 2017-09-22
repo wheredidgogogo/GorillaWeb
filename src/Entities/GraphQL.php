@@ -69,7 +69,7 @@ class GraphQL extends EntityAbstract implements CanCached
      */
     public function getCached(): array
     {
-        return $this->cacheData = collect($this->collection->getQueries())
+        return $this->cacheData = $this->collection->getQueries()
             ->mapWithKeys(function (Query $query) {
                 return [
                     $query->getName() => $this->getCacheContent($query->cacheKey()),
@@ -86,7 +86,7 @@ class GraphQL extends EntityAbstract implements CanCached
      */
     public function allInCached(): bool
     {
-        return count($this->collection->getQueries()) === 0;
+        return $this->collection->getQueries()->isEmpty();
     }
 
     /**

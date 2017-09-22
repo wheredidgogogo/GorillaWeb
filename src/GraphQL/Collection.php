@@ -7,6 +7,9 @@ namespace Gorilla\GraphQL;
  *
  * @package Gorilla\GraphQL
  */
+
+use Illuminate\Support\Collection as BaseCollection;
+
 /**
  * Class Collection
  *
@@ -20,14 +23,19 @@ class Collection
     private $method = 'query';
 
     /**
-     * @var array
+     * @var BaseCollection
      */
-    private $queries = [];
+    private $queries;
 
     /**
      * @var Query
      */
     private $current;
+
+    public function __construct()
+    {
+        $this->queries = new BaseCollection();
+    }
 
     /**
      * @param $name
@@ -39,7 +47,7 @@ class Collection
         $this->setMethod('query');
 
         $query = new Query($name);
-        $this->queries[] = $query;
+        $this->queries->push($query);
         $this->current = $query;
 
         return $this;
@@ -89,7 +97,7 @@ class Collection
      */
     public function reset()
     {
-        $this->queries = [];
+        $this->queries = new BaseCollection();
         $this->current = null;
 
         return $this;
@@ -109,9 +117,9 @@ class Collection
     }
 
     /**
-     * @return array|Query[]
+     * @return BaseCollection
      */
-    public function getQueries()
+    public function getQueries(): \Illuminate\Support\Collection
     {
         return $this->queries;
     }
@@ -121,17 +129,17 @@ class Collection
      *
      * @return Query|null
      */
-    public function find($name)
+    public function find($name): ?Query
     {
-        return collect($this->queries)->filter(function ($query) use ($name) {
+        return $this->queries->filter(function ($query) use ($name) {
             return $query->getName() === $name;
         })->first();
     }
 
     /**
-     * @return Query
+     * @return Query|null
      */
-    public function getCurrent()
+    public function getCurrent(): ?Query
     {
         return $this->current;
     }
@@ -139,7 +147,7 @@ class Collection
     /**
      * @return string
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
@@ -147,9 +155,9 @@ class Collection
     /**
      * @param $key
      */
-    public function removeQuery($key)
+    public function removeQuery($key): void
     {
-        $this->queries = collect($this->queries)->reject(function (Query $query) use ($key) {
+        $this->queries = $this->queries->reject(function (Query $query) use ($key) {
             return $query->getName() === $key;
         })->toArray();
     }

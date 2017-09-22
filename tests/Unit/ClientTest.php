@@ -46,7 +46,7 @@ class ClientTest extends TestCase
 
         $this->client = new Client('fakeId', 'fakeToken');
         $this->client->setHandler($handler);
-        $this->client->setCachePath(dirname(__DIR__).'/cache');
+        $this->client->setCachePath(dirname(dirname(__DIR__)).'/cache');
     }
 
     /** @test */

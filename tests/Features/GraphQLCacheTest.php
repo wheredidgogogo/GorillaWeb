@@ -319,9 +319,9 @@ class GraphQLCacheTest extends TestCase
         }
     }
 
-    private function buildCache($array, $expires)
+    private function buildCache(\Illuminate\Support\Collection $array, $expires)
     {
-        collect($array)->each(function (Query $query) use ($expires) {
+        $array->each(function (Query $query) use ($expires) {
             $cache = self::$cache->getItem($query->cacheKey())->set($query->cacheKey());
 
             if ($expires instanceof DateTimeInterface) {
