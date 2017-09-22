@@ -31,6 +31,11 @@ class Client
     private $cachePath = '/tmp';
 
     /**
+     * @var int
+     */
+    private $cacheSeconds = 0;
+
+    /**
      * Client constructor.
      *
      * @param $id
@@ -52,6 +57,7 @@ class Client
 
     /**
      * @return JsonResponse|string
+     * @throws \RuntimeException
      * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
      * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
      * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
@@ -62,8 +68,22 @@ class Client
     public function get()
     {
         $graphQL = new GraphQL($this->queries);
+        $graphQL->cache($this->cacheSeconds);
 
         return $this->request->request($graphQL);
+    }
+
+    /**
+     * Set cache seconds
+     * @param $seconds
+     *
+     * @return $this
+     */
+    public function cache($seconds)
+    {
+        $this->cacheSeconds = $seconds;
+
+        return $this;
     }
 
     /**

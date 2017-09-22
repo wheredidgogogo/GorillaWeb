@@ -50,11 +50,6 @@ class Request implements RequestInterface
     private $client;
 
     /**
-     * @var string
-     */
-    private $cachePath = '/tmp';
-
-    /**
      * Client constructor.
      *
      * @param $id
