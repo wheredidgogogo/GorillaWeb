@@ -102,10 +102,18 @@ trait Cacheable
 
     /**
      *
+     * @param $key
+     * @param $value
+     *
+     * @return bool
      * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
      */
     public function saveCacheData($key, $value)
     {
-        return self::$cache->save(self::$cache->getItem($key)->set($value));
+        if ($this->cacheTime) {
+            return self::$cache->save(self::$cache->getItem($key)->set($value)->expiresAfter($this->cacheTime));
+        }
+
+        return true;
     }
 }

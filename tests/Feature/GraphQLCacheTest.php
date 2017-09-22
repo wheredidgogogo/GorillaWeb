@@ -324,6 +324,51 @@ class GraphQLCacheTest extends TestCase
         }
     }
 
+    /** @test */
+    public function get_response_and_disable_cache()
+    {
+        self::$cache->clear();
+        // Arrange
+        $collection = new Collection();
+        $collection->query('my_first_query')
+            ->filters([
+                'name' => 'name',
+            ])
+            ->fields([
+                'first_field',
+                'second_field',
+                'media' => [
+                    'id',
+                    'name',
+                ],
+            ])
+            ->query('second_query')
+            ->fields([
+                'first_field',
+                'second_field',
+                'media' => [
+                    'id',
+                    'name',
+                ],
+                'bar',
+                'foo',
+            ]);
+
+        $graphQL = new GraphQL($collection);
+
+        $request = new Request('id', 'token');
+        $request->setHandler($this->getMockHandler([
+            'my_first_query' => 'first_query',
+            'second_query' => 'response',
+        ]));
+
+        $request->request($graphQL);
+
+        foreach ($collection->getQueries() as $query) {
+            $this->assertFalse(self::$cache->hasItem($query->cacheKey()));
+        }
+    }
+
     private function buildCache(\Illuminate\Support\Collection $array, $expires)
     {
         $array->each(function (Query $query) use ($expires) {
