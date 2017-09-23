@@ -105,4 +105,14 @@ class GraphQL extends EntityAbstract implements CanCached
             }
         });
     }
+
+    /**
+     * @param array $array
+     *
+     * @return array
+     */
+    public function merge(array $array)
+    {
+        return array_merge_recursive(['data' => $this->cacheData], $array);
+    }
 }
