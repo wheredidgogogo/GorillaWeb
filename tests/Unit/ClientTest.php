@@ -124,6 +124,33 @@ class ClientTest extends TestCase
 
         $this->client->foobar();
     }
+
+    /** @test */
+    public function enable_cache_use_default_cache_second()
+    {
+        // Arrange
+
+        // Act
+        $this->client->setDefaultCacheSecond(600);
+        $this->client->cache();
+
+        // Assert
+        $this->assertTrue($this->client->isCacheEnabled());
+        $this->assertEquals(600, $this->client->getCacheSeconds());
+    }
+
+    /** @test */
+    public function enable_cache()
+    {
+        // Arrange
+
+        // Act
+        $this->client->cache(700);
+
+        // Assert
+        $this->assertTrue($this->client->isCacheEnabled());
+        $this->assertEquals(700, $this->client->getCacheSeconds());
+    }
 }
 
 class getStub implements EntityInterface

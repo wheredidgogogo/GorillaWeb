@@ -36,6 +36,11 @@ class Client
     private $cacheSeconds = 0;
 
     /**
+     * @var int
+     */
+    private $defaultCacheSeconds = 60;
+
+    /**
      * Client constructor.
      *
      * @param $id
@@ -74,16 +79,45 @@ class Client
     }
 
     /**
+     * @param $seconds
+     *
+     * @return $this
+     */
+    public function setDefaultCacheSecond($seconds)
+    {
+        $this->defaultCacheSeconds = $seconds;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCacheSeconds()
+    {
+        return $this->cacheSeconds;
+
+    }
+
+    /**
      * Set cache seconds
      * @param $seconds
      *
      * @return $this
      */
-    public function cache($seconds)
+    public function cache($seconds = null)
     {
-        $this->cacheSeconds = $seconds;
+        $this->cacheSeconds = $seconds ?: $this->defaultCacheSeconds;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCacheEnabled()
+    {
+        return $this->cacheSeconds > 0;
     }
 
     /**
