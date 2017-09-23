@@ -75,7 +75,10 @@ class Client
         $graphQL = new GraphQL($this->queries);
         $graphQL->cache($this->cacheSeconds);
 
-        return $this->request->request($graphQL);
+        $response = $this->request->request($graphQL);
+        $this->queries->reset();
+
+        return $response;
     }
 
     /**
