@@ -28,7 +28,10 @@
         "psr-4": {
             "Gorilla\\": "src/",
             "Tests\\": "tests/"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "extra": {
         "branch-alias": {
