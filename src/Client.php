@@ -99,7 +99,6 @@ class Client
     public function getCacheSeconds()
     {
         return $this->cacheSeconds;
-
     }
 
     /**
