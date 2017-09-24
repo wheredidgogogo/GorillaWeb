@@ -8,7 +8,8 @@ if (!function_exists('gorilla_value')) {
      *
      * @return mixed
      */
-    function gorilla_value(array $array, $field, $key) {
+    function gorilla_value(array $array, $field, $key)
+    {
         return collect($array)->where($field, $key)->first();
     }
 }
