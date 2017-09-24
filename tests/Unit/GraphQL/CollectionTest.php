@@ -137,4 +137,44 @@ EOF
             (string)$collection
         );
     }
+
+    /** @test */
+    public function mutation_test()
+    {
+        // Arrange
+        $collection = new Collection();
+
+        // Act
+        $collection->mutation('submit_enquiry')
+            ->fields([
+                'name' => 'enquiry_form_name',
+                'first_name' => 'Foo',
+                'email' => 'safe@example.com',
+                'mobile' => '0000000000',
+                'ip' => '127.0.0.1',
+                'tribes' => ['tribe_slug'],
+                'fields' => [
+                    [
+                        'name' => 'first_field',
+                        'value' => 'first_value',
+                    ],
+                    [
+                        'name' => 'second_field',
+                        'value' => 'second_value',
+                    ],
+                ],
+            ]);
+
+        // Assert
+        $this->assertGraphQLEqual(<<<EOF
+    mutation {
+        submit_enquiry (name: "enquiry_form_name", first_name: "Foo", email: "safe@example.com",
+            mobile: "0000000000", ip: "127.0.0.1", tribes: ["tribe_slug"],
+            fields: [{ name: "first_field", value: "first_value" }, { name: "second_field", value: "second_value" }]) 
+    }
+EOF
+        ,
+            (string)$collection
+        );
+    }
 }

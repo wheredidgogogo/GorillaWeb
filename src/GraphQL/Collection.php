@@ -2,12 +2,6 @@
 
 namespace Gorilla\GraphQL;
 
-/**
- * Class Collection
- *
- * @package Gorilla\GraphQL
- */
-
 use Illuminate\Support\Collection as BaseCollection;
 
 /**
@@ -48,13 +42,26 @@ class Collection
     public function query($name)
     {
         $this->setMethod('query');
-
         $query = new Query($name);
-        $this->queries->push($query);
-        $this->current = $query;
+        $this->pushQuery($query);
 
         return $this;
     }
+
+    /**
+     * @param $name
+     *
+     * @return $this
+     */
+    public function mutation($name)
+    {
+        $this->setMethod('mutation');
+        $mutation = new Mutation($name);
+        $this->pushQuery($mutation);
+
+        return $this;
+    }
+
 
     /**
      * @param array $fields
@@ -163,5 +170,14 @@ class Collection
         $this->queries = $this->queries->reject(function (Query $query) use ($key) {
             return $query->getName() === $key;
         });
+    }
+
+    /**
+     * @param Builder $query
+     */
+    private function pushQuery(Builder $query)
+    {
+        $this->queries->push($query);
+        $this->current = $query;
     }
 }
