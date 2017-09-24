@@ -35,8 +35,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.*-dev",
-            "dev-support-graphql": "2.0.*-dev"
+            "dev-master": "2.0.*-dev"
         }
     }
 }
