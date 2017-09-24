@@ -5,6 +5,7 @@ namespace Gorilla\Entities;
 use Gorilla\Contracts\CanCached;
 use Gorilla\Contracts\EntityAbstract;
 use Gorilla\Contracts\MethodType;
+use Gorilla\GraphQL\Builder;
 use Gorilla\GraphQL\Collection;
 use Gorilla\GraphQL\Query;
 use Gorilla\Traits\Cacheable;
@@ -64,13 +65,17 @@ class GraphQL extends EntityAbstract implements CanCached
     }
 
     /**
+     * Cache query data (Only for Query)
      * @return array
      * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
      */
     public function getCached(): array
     {
         return $this->cacheData = $this->collection->getQueries()
-            ->mapWithKeys(function (Query $query) {
+            ->filter(function (Builder $query) {
+                return $query instanceof Query;
+            })
+            ->mapWithKeys(function (Builder $query) {
                 return [
                     $query->getName() => $this->getCacheContent($query->cacheKey()),
                 ];
