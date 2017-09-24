@@ -83,6 +83,6 @@ class Menu extends EntityAbstract
      */
     public function sub($id)
     {
-        return new SubMenu([$id], $this->request);
+        return new SubMenu($this->request, [$id]);
     }
 }

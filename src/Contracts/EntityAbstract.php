@@ -13,6 +13,7 @@ namespace Gorilla\Contracts;
  * @package Gorilla\Contracts
  */
 use Gorilla\Request;
+use Gorilla\Traits\Cacheable;
 
 /**
  * Class EntityAbstract
@@ -38,6 +39,9 @@ abstract class EntityAbstract implements EntityInterface
      */
     public function __construct($arguments = [])
     {
+        if ($this instanceof CanCached) {
+            $this->bootCached();
+        }
     }
 
     /**
@@ -54,6 +58,13 @@ abstract class EntityAbstract implements EntityInterface
 
     /**
      * @return \Gorilla\Response\JsonResponse|string
+     * @throws \RuntimeException
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
+     * @throws \InvalidArgumentException
+     * @throws \GuzzleHttp\Exception\RequestException
+     * @throws \Gorilla\Exceptions\ResponseException
      */
     public function get()
     {

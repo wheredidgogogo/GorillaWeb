@@ -24,7 +24,7 @@ class SubMenu extends EntityAbstract
      * @param array   $arguments
      * @param Request $request
      */
-    public function __construct($arguments = [], Request $request)
+    public function __construct(Request $request, $arguments = [])
     {
         parent::__construct($arguments);
 

@@ -36,22 +36,12 @@ class AccessToken
     /**
      * AccessToken constructor.
      *
-     * @internal param $accessToken
-     * @internal param $expires
-     * @internal param $refreshToken
-     *
-     * @param $cachePath
-     *
      * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
      * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
      * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
      */
-    public function __construct($cachePath)
+    public function __construct()
     {
-        CacheManager::setDefaultConfig([
-            'path' => $cachePath,
-            'ignoreSymfonyNotice' => true,
-        ]);
         if (!self::$cache) {
             self::$cache = CacheManager::getInstance('files');
         }
@@ -64,8 +54,7 @@ class AccessToken
     public function loadAccessTokenFromCached()
     {
         if ($cache = self::$cache->getItem($this->cacheKey)->get()) {
-
-            $this->fill($cache['accessToken'] , $cache['expires']);
+            $this->fill($cache['accessToken'], $cache['expires']);
 
             return true;
         }
@@ -87,7 +76,6 @@ class AccessToken
             throw new InvalidArgumentException('Access token is required');
         }
 
-        $expires = $expires !== 0 ? time() + $expires : 0;
         $this->fill($accessToken, $expires);
 
         $this->accessTokenCached();
@@ -134,20 +122,22 @@ class AccessToken
 
     /**
      * @return bool
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
      * @throws \RuntimeException
      */
     public function hasExpired()
     {
-        $expires = $this->getExpires();
-        if (null === $expires) {
-            throw new RuntimeException('"expires" is not set on the token');
+        if (self::$cache->hasItem($this->cacheKey)) {
+            return self::$cache->getItem($this->cacheKey)->isExpired();
         }
-        return $expires < time();
+
+        return true;
     }
 
     /**
      *
      * @throws \RuntimeException
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
      */
     public function checkExpired()
     {

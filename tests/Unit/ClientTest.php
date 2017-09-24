@@ -32,6 +32,10 @@ class ClientTest extends TestCase
         parent::setUp();
 
         $mock = new MockHandler([
+            new Response(201, [], json_encode([
+                'access_token' => 'FooBar',
+                'expires_in' => 100000,
+            ])),
             new Response(201),
         ]);
         $handler = HandlerStack::create($mock);
@@ -42,19 +46,17 @@ class ClientTest extends TestCase
 
         $this->client = new Client('fakeId', 'fakeToken');
         $this->client->setHandler($handler);
+        $this->client->setCachePath(dirname(dirname(__DIR__)).'/cache');
     }
 
     /** @test */
     public function get_parameters_builder()
     {
-        // Arrange
-        $this->client->setAccessToken('fake access token');
-
         // Act
         $this->client->request(new getStub());
 
         /** @var Request $request */
-        $request = $this->container[0]['request'];
+        $request = end($this->container)['request'];
 
         // Assert
         $this->assertEquals(MethodType::GET, $request->getMethod());
@@ -65,12 +67,11 @@ class ClientTest extends TestCase
     public function post_parameters_builder()
     {
         // Arrange
-        $this->client->setAccessToken('fake access token');
 
         // Act
         $this->client->request(new postStub());
         /** @var Request $request */
-        $request = $this->container[0]['request'];
+        $request = end($this->container)['request'];
 
         // Assert
         $this->assertEquals(MethodType::POST, $request->getMethod());
@@ -84,38 +85,13 @@ class ClientTest extends TestCase
     public function access_token_builder()
     {
         // Arrange
-        $this->client->setAccessToken('fake access token');
 
         // Act
         $this->client->request(new postStub());
         /** @var Request $request */
-        $request = $this->container[0]['request'];
+        $request = end($this->container)['request'];
 
         // Assert
-        $this->assertEquals('Bearer fake access token', $request->getHeader('Authorization')[0]);
-    }
-
-    /** @test */
-    public function auto_get_access_token_if_token_is_missing()
-    {
-        // Arrange
-        $mock = new MockHandler([
-            new Response(201, [], json_encode(['access_token' => 'FooBar'])),
-            new Response(201),
-        ]);
-        $handler = HandlerStack::create($mock);
-        $container = [];
-        $history = Middleware::history($container);
-        $handler->push($history);
-
-        $this->client->setHandler($handler);
-
-        // Act
-        $this->client->request(new postStub());
-        $request = $container[1]['request'];
-
-        // Assert
-        $this->assertCount(2, $container);
         $this->assertEquals('Bearer FooBar', $request->getHeader('Authorization')[0]);
     }
 
@@ -123,13 +99,12 @@ class ClientTest extends TestCase
     public function change_base_uri()
     {
         // Arrange
-        $this->client->setAccessToken('Fake token');
         $this->client->setBaseUri('https://www.google.com');
 
         // Act
         $this->client->request(new postStub());
         /** @var Request $request */
-        $request = $this->container[0]['request'];
+        $request = end($this->container)['request'];
         
         // Assert
         $this->assertEquals('https://www.google.com', $request->getUri()->__toString());
@@ -148,6 +123,33 @@ class ClientTest extends TestCase
         $this->expectException(NonExistMethodException::class);
 
         $this->client->foobar();
+    }
+
+    /** @test */
+    public function enable_cache_use_default_cache_second()
+    {
+        // Arrange
+
+        // Act
+        $this->client->setDefaultCacheSecond(600);
+        $this->client->cache();
+
+        // Assert
+        $this->assertTrue($this->client->isCacheEnabled());
+        $this->assertEquals(600, $this->client->getCacheSeconds());
+    }
+
+    /** @test */
+    public function enable_cache()
+    {
+        // Arrange
+
+        // Act
+        $this->client->cache(700);
+
+        // Assert
+        $this->assertTrue($this->client->isCacheEnabled());
+        $this->assertEquals(700, $this->client->getCacheSeconds());
     }
 }
 
@@ -184,7 +186,7 @@ class getStub implements EntityInterface
      */
     public function endpoint()
     {
-        return '';
+        return '/';
     }
 
     /**
