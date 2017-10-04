@@ -8,6 +8,7 @@ use Gorilla\Entities\ComponentType;
 use Gorilla\Entities\EnquiryForm;
 use Gorilla\Entities\Menu;
 use Gorilla\Entities\Product;
+use Gorilla\Entities\ProductComponent;
 use Gorilla\Entities\Range;
 use Gorilla\Entities\Tribe;
 use Gorilla\Entities\WebsiteComponent;
@@ -48,6 +49,8 @@ class Factory
                 return new Tribe($arguments);
             case 'enquiries':
                 return new EnquiryForm($arguments);
+            case 'productComponents':
+                return new ProductComponent($arguments);
         }
 
         return null;
