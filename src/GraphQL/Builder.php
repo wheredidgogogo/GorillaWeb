@@ -2,23 +2,7 @@
 
 namespace Gorilla\GraphQL;
 
-/**
- * Class Builder
- *
- * @package Gorilla\GraphQL
- */
-/**
- * Class Builder
- *
- * @package Gorilla\GraphQL
- */
-/**
- * Class Builder
- *
- * @package Gorilla\GraphQL
- */
-
-use Illuminate\Support\Collection;
+use Tightenco\Collect\Support\Collection;
 
 /**
  * Class Builder

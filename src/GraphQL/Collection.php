@@ -2,7 +2,7 @@
 
 namespace Gorilla\GraphQL;
 
-use Illuminate\Support\Collection as BaseCollection;
+use Tightenco\Collect\Support\Collection as BaseCollection;
 
 /**
  * Class Collection

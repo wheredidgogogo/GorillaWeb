@@ -2,10 +2,18 @@
 
 namespace Gorilla\GraphQL;
 
-use Illuminate\Support\Collection;
+use Tightenco\Collect\Support\Collection;
 
+/**
+ * Class Mutation
+ *
+ * @package Gorilla\GraphQL
+ */
 class Mutation extends Builder
 {
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return <<<EOF
