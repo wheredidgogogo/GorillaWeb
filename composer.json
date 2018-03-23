@@ -17,7 +17,7 @@
         "php": "^7.0",
         "guzzlehttp/guzzle": "^6",
         "phpfastcache/phpfastcache": "^6.0",
-        "tightenco/collect": "5.4.*|5.5.*"
+        "tightenco/collect": "^5"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.3",
