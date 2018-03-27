@@ -51,6 +51,11 @@ class SubmitEnquiry extends EntityAbstract
     private $tribes = [];
 
     /**
+     * @var array
+     */
+    private $files = [];
+
+    /**
      * @var string
      */
     private $ip;
@@ -98,6 +103,7 @@ class SubmitEnquiry extends EntityAbstract
             'mobile' => $this->mobile,
             'fields' => $this->fields,
             'tribes' => $this->tribes,
+            'files' => $this->files,
         ];
     }
 
@@ -131,6 +137,9 @@ class SubmitEnquiry extends EntityAbstract
      * @param $attributes
      *
      * @return \Gorilla\Response\JsonResponse
+     * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
      */
     public function save($attributes)
     {

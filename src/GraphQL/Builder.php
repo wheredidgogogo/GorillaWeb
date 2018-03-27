@@ -77,11 +77,11 @@ EOF;
     }
 
     /**
-     * @param $filter
+     * @param Collection $filter
      *
      * @return string
      */
-    private function buildFilters(Collection $filter)
+    private function buildFilters($filter)
     {
         if ($filter->isEmpty()) {
             return '';
@@ -97,13 +97,13 @@ EOF;
     }
 
     /**
-     * @param      $fields
+     * @param Collection  $fields
      *
      * @param null|string $parent
      *
      * @return string
      */
-    private function buildFields(Collection $fields, $parent = null)
+    private function buildFields($fields, $parent = null)
     {
         if ($fields->isEmpty()) {
             return '';
