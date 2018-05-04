@@ -61,6 +61,16 @@ class SubmitEnquiry extends EntityAbstract
     private $ip;
 
     /**
+     * @var string
+     */
+    private $created_at;
+
+    /**
+     * @var boolean
+     */
+    private $notifications;
+
+    /**
      * constructor.
      *
      * @param array   $arguments
@@ -95,7 +105,7 @@ class SubmitEnquiry extends EntityAbstract
      */
     public function parameters()
     {
-        return [
+        $data = [
             'first_name' => $this->firstName,
             'last_name' => $this->lastName,
             'email' => $this->email,
@@ -105,6 +115,16 @@ class SubmitEnquiry extends EntityAbstract
             'tribes' => $this->tribes,
             'files' => $this->files,
         ];
+
+        if ($this->created_at) {
+            $data['created_at'] = $this->created_at;
+        }
+
+        if ($this->notifications !== null) {
+            $data['notifications'] = $this->notifications;
+        }
+
+        return $data;
     }
 
     /**
