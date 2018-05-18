@@ -43,6 +43,20 @@ class Filter
      */
     public function __toString()
     {
+        $filters = [];
+        if ($this->isSubFilter()) {
+            foreach ($this->value as $key => $value) {
+                if (is_array($value)) {
+                    $array = implode(',', collect($value)->map(function ($value) {
+                        return is_string($value) ? "\"{$value}\"" : $value;
+                    })->toArray());
+                    $value = "[{$array}]";
+                }
+                $filters[] = "{$key}: {$value}";
+            }
+            return implode(',', $filters);
+        }
+
         $name = $this->isSubFilter() ? Arr::last(array_keys($this->value)) : $this->name;
         $value = $this->isSubFilter() ? end($this->value) : $this->value;
         $value = json_encode($value);

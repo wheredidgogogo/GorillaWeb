@@ -152,6 +152,7 @@ EOF
                 'name' => [
                     'Top banner',
                 ],
+                'limit' => 1,
             ],
             'media.media' => [
                 'name' => [
@@ -172,6 +173,9 @@ EOF
                     'id',
                     'name',
                     'banner',
+                    'collection' => [
+                        'name',
+                    ],
                 ],
             ],
         ]);
@@ -181,13 +185,16 @@ EOF
     first_query {
         id,
         name,
-        media (name: ["Top banner"]) {
+        media (name: ["Top banner"], limit: 1) {
             name,
             type,
             media (name: ["banner", "thumbnail"]) {
                 id,
                 name,
                 banner,
+                collection {
+                    name,
+                },
             },
         },
     }
