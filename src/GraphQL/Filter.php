@@ -2,11 +2,6 @@
 
 namespace Gorilla\GraphQL;
 
-/**
- * Class Filter
- *
- * @package Gorilla\GraphQL
- */
 use Illuminate\Support\Arr;
 
 /**
@@ -19,12 +14,12 @@ class Filter
     /**
      * @var string
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string|array
      */
-    private $value;
+    protected $value;
 
     /**
      * Filter constructor.
@@ -44,24 +39,55 @@ class Filter
     public function __toString()
     {
         $filters = [];
-        if ($this->isSubFilter()) {
-            foreach ($this->value as $key => $value) {
-                if (is_array($value)) {
-                    $array = implode(',', collect($value)->map(function ($value) {
-                        return is_string($value) ? "\"{$value}\"" : $value;
-                    })->toArray());
-                    $value = "[{$array}]";
+
+        if (\is_array($this->value)) {
+            if ($this->isValueArray($this->value)) {
+                $mapValue = $this->mapValues($this->value);
+                $filters[] = "{$this->name}: {$mapValue}";
+            } else {
+                foreach ($this->value as $key => $value) {
+                    $mapValue = $this->mapValues($value);
+                    $filters[] = "{$key}: {$mapValue}";
                 }
-                $filters[] = "{$key}: {$value}";
             }
-            return implode(',', $filters);
+        } else {
+            $mapValue = $this->mapValues($this->value);
+            $filters[] = "{$this->name}: {$mapValue}";
+        }
+        return implode(',', $filters);
+    }
+
+    /**
+     * Map value
+     *
+     * @param $value
+     *
+     * @return string
+     */
+    private function mapValues($value)
+    {
+        if (\is_array($value)) {
+            $values = [];
+            foreach ($value as $key => $item) {
+                $values[] = $this->mapValues($item);
+            }
+
+            return '['.implode(',', $values).']';
+        }
+        return \is_string($value) ? "\"{$value}\"" : $value;
+    }
+
+    private function isValueArray($value)
+    {
+        $valueArray = collect($value)->keys()->filter(function ($item) {
+            return is_numeric($item);
+        })->isNotEmpty();
+
+        if ($valueArray) {
+            return true;
         }
 
-        $name = $this->isSubFilter() ? Arr::last(array_keys($this->value)) : $this->name;
-        $value = $this->isSubFilter() ? end($this->value) : $this->value;
-        $value = json_encode($value);
-
-        return "{$name}: {$value}";
+        return false;
     }
 
     /**
@@ -90,7 +116,7 @@ class Filter
         $max_depth = 1;
 
         foreach ($array as $value) {
-            if (is_array($value)) {
+            if (\is_array($value)) {
                 $depth = $this->depth($value) + 1;
 
                 if ($depth > $max_depth) {

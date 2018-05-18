@@ -21,7 +21,7 @@ class QueryTest extends TestCase
         
     }
 EOF
-,
+            ,
             (string)$query
         );
     }
@@ -94,9 +94,9 @@ EOF
         second_field,
     }
 EOF
-    ,
+            ,
             (string)$query
-            );
+        );
     }
 
     /** @test */
@@ -148,13 +148,14 @@ EOF
         $query = new Query('first_query');
 
         $query->filters([
-            'media' => [
+            'mediaCollection' => [
+                'limit' => 1,
+                'loadMedia' => true,
                 'name' => [
                     'Top banner',
                 ],
-                'limit' => 1,
             ],
-            'media.media' => [
+            'mediaCollection.media' => [
                 'name' => [
                     'banner',
                     'thumbnail',
@@ -166,7 +167,7 @@ EOF
         $query->fields([
             'id',
             'name',
-            'media' => [
+            'mediaCollection' => [
                 'name',
                 'type',
                 'media' => [
@@ -185,7 +186,7 @@ EOF
     first_query {
         id,
         name,
-        media (name: ["Top banner"], limit: 1) {
+        mediaCollection (limit: 1, loadMedia: 1, name: ["Top banner"]) {
             name,
             type,
             media (name: ["banner", "thumbnail"]) {
@@ -202,5 +203,56 @@ EOF
             ,
             (string)$query
         );
+    }
+
+    /**
+     * @test
+     */
+    public function test_deep_filter_array()
+    {
+        // Arrange
+        $query = new Query('ranges');
+        $query->filters([
+            'result_count' => 20,
+            'products' => [
+                'limit' => 3,
+                'loadMedia' => true,
+            ],
+            'products.media_collection' => [
+                'size' => ['square']
+            ],
+        ]);
+
+        $query->fields([
+            'name',
+            'products' => [
+                'name',
+                'media_collection' => [
+                    'name',
+                    'media' => [
+                        'square',
+                    ],
+                ],
+            ],
+        ]);
+
+        $this->assertGraphQLEqual(<<<EOF
+    ranges (result_count: 20) {
+        name,
+        products (limit: 3, loadMedia: 1) {
+            name,
+            media_collection (size: ["square"]) {
+                name,
+                media {
+                    square,
+                },
+            },
+        },
+    }
+EOF
+            ,
+            (string)$query
+        );
+
     }
 }

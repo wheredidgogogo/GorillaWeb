@@ -131,8 +131,9 @@ EOF;
      */
     public function getBaseFilter()
     {
-        return $this->filters->filter(function (Filter $filter) {
-            return !$filter->isSubFilter();
+        $fields = $this->fields->keys()->toArray();
+        return $this->filters->filter(function (Filter $filter) use ($fields) {
+            return !$filter->isSubFilter() && !\in_array($filter->getName(), $fields, true);
         });
     }
 
