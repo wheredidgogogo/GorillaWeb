@@ -186,7 +186,7 @@ EOF
     first_query {
         id,
         name,
-        mediaCollection (limit: 1, loadMedia: 1, name: ["Top banner"]) {
+        mediaCollection (limit: 1, loadMedia: true, name: ["Top banner"]) {
             name,
             type,
             media (name: ["banner", "thumbnail"]) {
@@ -239,7 +239,7 @@ EOF
         $this->assertGraphQLEqual(<<<EOF
     ranges (result_count: 20) {
         name,
-        products (limit: 3, loadMedia: 1) {
+        products (limit: 3, loadMedia: true) {
             name,
             media_collection (size: ["square"]) {
                 name,

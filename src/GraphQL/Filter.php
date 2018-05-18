@@ -74,7 +74,17 @@ class Filter
 
             return '['.implode(',', $values).']';
         }
-        return \is_string($value) ? "\"{$value}\"" : $value;
+
+        if (\is_string($value)) {
+            $value = "\"{$value}\"";
+        }
+
+        if (\is_bool($value)) {
+//            dd(is_bool($value), $value);
+            $value = $value === true ? 'true' : 'false';
+        }
+
+        return $value;
     }
 
     private function isValueArray($value)
