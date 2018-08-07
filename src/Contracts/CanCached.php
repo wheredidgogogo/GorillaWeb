@@ -47,4 +47,11 @@ interface CanCached
      * @return mixed
      */
     public function saveCache($data);
+
+    /**
+     * Get last updated time and cached time
+     *
+     * @return array
+     */
+    public function getCachedTime($key);
 }

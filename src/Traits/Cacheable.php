@@ -2,8 +2,10 @@
 
 namespace Gorilla\Traits;
 
+use Carbon\Carbon;
 use Gorilla\Contracts\CanCached;
 use phpFastCache\CacheManager;
+use Tightenco\Collect\Support\Arr;
 
 /**
  * Trait Cacheable
@@ -20,7 +22,7 @@ trait Cacheable
     /**
      * @var int
      */
-    protected $cacheTime = 0;
+    protected $cacheTime = 31536000;
 
     /**
      * Cache file
@@ -37,7 +39,7 @@ trait Cacheable
     public function bootCached()
     {
         if (!$this instanceof CanCached) {
-            throw new \RuntimeException('Missing implement '.CanCached::class.' interface');
+            throw new \RuntimeException('Missing implement ' . CanCached::class . ' interface');
         }
 
         if (!self::$cache) {
@@ -47,13 +49,12 @@ trait Cacheable
 
     /**
      * @param int $seconds
+     * @deprecated Removed user control the cache expire, follow last updated time from server
      *
      * @return $this
      */
     public function cache($seconds = 60)
     {
-        $this->cacheTime = $seconds;
-
         return $this;
     }
 
@@ -81,7 +82,7 @@ trait Cacheable
             return null;
         }
 
-        return self::$cache->getItem($key)->get();
+        return data_get($item->get(), 'data');
     }
 
     /**
@@ -113,9 +114,33 @@ trait Cacheable
     public function saveCacheData($key, $value)
     {
         if ($this->cacheTime) {
-            return self::$cache->save(self::$cache->getItem($key)->set($value)->expiresAfter($this->cacheTime));
+            $cached = [
+                'current' => Carbon::now()->__toString(),
+                'lastUpdatedAt' => data_get($value, '0.last_updated_at'),
+                'data' => $value,
+            ];
+
+            return self::$cache->save(self::$cache->getItem($key)->set($cached)->expiresAfter($this->cacheTime));
         }
 
         return true;
+    }
+
+    /**
+     * Get last updated time and cached time
+     *
+     * @param $key
+     *
+     * @return array
+     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     */
+    public function getCachedTime($key)
+    {
+        $item = self::$cache->getItem($key);
+        if ($item->isExpired() || !self::$cache->hasItem($key)) {
+            return null;
+        }
+        return Arr::only($item->get(), ['lastUpdatedAt', 'current']);
     }
 }

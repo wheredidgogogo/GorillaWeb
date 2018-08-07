@@ -5,7 +5,6 @@ namespace Gorilla\Entities;
 use Gorilla\Contracts\EntityAbstract;
 use Gorilla\Contracts\MethodType;
 use Gorilla\Request;
-use InvalidArgumentException;
 
 /**
  * Class SubmitEnquiry
@@ -39,7 +38,7 @@ class SubmitEnquiry extends EntityAbstract
      * @var string
      */
     private $mobile;
-    
+
     /**
      * @var array
      */
@@ -78,7 +77,7 @@ class SubmitEnquiry extends EntityAbstract
      */
     public function __construct(Request $request, $arguments = [])
     {
-        parent::__construct($arguments);
+        parent::__construct();
 
         if (count($arguments) > 0) {
             $this->name = $arguments[0];

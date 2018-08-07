@@ -43,8 +43,15 @@ class Builder
      */
     public function __toString()
     {
-        if (!in_array('last_updated_at', $this->fields->toArray(), true)) {
+        if ($this->name !== 'lastUpdatedAt' && !\in_array('last_updated_at', $this->fields->toArray(), true)) {
             $this->fields[] = 'last_updated_at';
+        }
+
+        if ($this->fields->count() === 0) {
+            return <<<EOF
+{$this->name}
+EOF;
+
         }
 
         return <<<EOF
@@ -119,11 +126,11 @@ EOF;
                 $parent = $parent ? "{$parent}.{$key}" : $key;
                 $subFilters = $this->getSubFilter($parent);
                 $query .= "{$key} {$this->buildFilters($subFilters)}{ {$this->buildFields(collect($value), $parent)} },"
-                    .PHP_EOL;
+                    . PHP_EOL;
                 return true;
             }
 
-            $query .= "{$value},".PHP_EOL;
+            $query .= "{$value}," . PHP_EOL;
         });
 
         return $query;

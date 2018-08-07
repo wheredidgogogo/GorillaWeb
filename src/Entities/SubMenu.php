@@ -26,13 +26,14 @@ class SubMenu extends EntityAbstract
      */
     public function __construct(Request $request, $arguments = [])
     {
-        parent::__construct($arguments);
+        parent::__construct();
 
         if (count($arguments) > 0) {
             $this->id = $arguments[0];
         }
         $this->setRequest($request);
     }
+
     /**
      * Request method type
      *

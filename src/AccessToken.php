@@ -4,7 +4,6 @@ namespace Gorilla;
 
 use InvalidArgumentException;
 use phpFastCache\CacheManager;
-use RuntimeException;
 
 /**
  * Class AccessToken
@@ -124,6 +123,7 @@ class AccessToken
      * @return bool
      * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
      * @throws \RuntimeException
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function hasExpired()
     {
@@ -138,6 +138,7 @@ class AccessToken
      *
      * @throws \RuntimeException
      * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function checkExpired()
     {

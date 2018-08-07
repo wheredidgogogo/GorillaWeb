@@ -7,14 +7,15 @@ use Gorilla\Contracts\EntityInterface;
 use Gorilla\Contracts\MethodType;
 use Gorilla\Contracts\RequestInterface;
 use Gorilla\Entities\AccessToken as AccessTokenEntity;
+use Gorilla\Entities\LastUpdatedAt;
 use Gorilla\Exceptions\ResponseException;
 use Gorilla\Response\JsonResponse;
-use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7;
-use Illuminate\Support\Arr;
-use phpFastCache\CacheManager;
+use Log;
 use RuntimeException;
+use Tightenco\Collect\Support\Arr;
 
 /**
  * Class Request
@@ -39,10 +40,15 @@ class Request implements RequestInterface
     private $accessToken;
 
     /**
+     * @var string
+     */
+    public static $lastUpdatedAt;
+
+    /**
      * @var array
      */
     private $config = [
-        'base_uri' =>  'https://api.gorilladash.com',
+        'base_uri' => 'https://api.gorilladash.com',
     ];
 
     /**
@@ -56,9 +62,6 @@ class Request implements RequestInterface
      * @param $id
      * @param $token
      *
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
-     * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
      */
     public function __construct($id, $token)
     {
@@ -130,24 +133,24 @@ class Request implements RequestInterface
      * @throws \Gorilla\Exceptions\ResponseException
      * @throws \GuzzleHttp\Exception\RequestException
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function request(EntityInterface $entity)
     {
-        if ($entity instanceof CanCached) {
-            $entity->getCached();
-            if ($entity->allInCached()) {
-                return new JsonResponse($entity->merge([]));
-            }
-        }
-
         if (!$this->client) {
             $this->createClient();
         }
 
         $options = $this->buildParameters($entity, []);
-
         $this->needAccess($entity, $options);
 
+        if ($entity instanceof CanCached) {
+            $entity->setLastUpdatedAt(self::$lastUpdatedAt);
+            $entity->getCached();
+            if ($entity->allInCached()) {
+                return new JsonResponse($entity->merge([]));
+            }
+        }
         try {
             $response = $this->client->request($entity->method(), $entity->endpoint(), $options);
             $data = json_decode($response->getBody()->getContents(), true);
@@ -159,6 +162,7 @@ class Request implements RequestInterface
             return new JsonResponse($data);
         } catch (RequestException $ex) {
             if ($ex->hasResponse()) {
+                Log::error(json_encode($options));
                 throw new ResponseException(Psr7\str($ex->getResponse()));
             }
 
@@ -201,6 +205,7 @@ class Request implements RequestInterface
      * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
      * @throws \InvalidArgumentException
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     private function needAccess(EntityInterface $entity, &$options)
     {
@@ -224,7 +229,28 @@ class Request implements RequestInterface
             $accessToken->setup($token['access_token'], $token['expires_in']);
             $this->setAccessToken($accessToken);
         }
-
         $options['headers']['Authorization'] = "Bearer {$this->accessToken->getAccessToken()}";
+        if (!$entity instanceof LastUpdatedAt) {
+            $this->getLastUpdatedAt();
+        }
+    }
+
+    /**
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
+     */
+    private function getLastUpdatedAt()
+    {
+        if (self::$lastUpdatedAt) {
+            return;
+        }
+        $query = new \Gorilla\GraphQL\Collection();
+        $query->query('lastUpdatedAt');
+        $graphQL = new LastUpdatedAt($query);
+        $response = $this->request($graphQL);
+        self::$lastUpdatedAt = data_get($response->json('data'), 'lastUpdatedAt');
     }
 }

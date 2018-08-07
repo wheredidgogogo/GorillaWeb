@@ -7,6 +7,7 @@ namespace Gorilla\Entities;
  *
  * @package Gorilla\Tokens
  */
+
 use Gorilla\Contracts\EntityAbstract;
 use Gorilla\Contracts\MethodType;
 

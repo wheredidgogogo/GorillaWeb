@@ -25,7 +25,7 @@ class ProductComponent extends EntityAbstract
      */
     public function __construct($arguments = [])
     {
-        parent::__construct($arguments);
+        parent::__construct();
 
         if (count($arguments) > 0) {
             $this->componentType = $arguments[0];

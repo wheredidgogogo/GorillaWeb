@@ -72,7 +72,7 @@ class Filter
                 $values[] = $this->mapValues($item);
             }
 
-            return '['.implode(',', $values).']';
+            return '[' . implode(',', $values) . ']';
         }
 
         if (\is_string($value)) {

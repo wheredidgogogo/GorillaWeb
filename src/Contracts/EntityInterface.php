@@ -38,4 +38,20 @@ interface EntityInterface
      * @return mixed
      */
     public function setRequest(RequestInterface $request);
+
+    /**
+     * Get last update at
+     *
+     * @return string|null
+     */
+    public function getLastUpdatedAt();
+
+    /**
+     * Set last update at
+     *
+     * @param ?string $lastUpdatedAt
+     *
+     * @return \Gorilla\Contracts\EntityAbstract
+     */
+    public function setLastUpdatedAt($lastUpdatedAt);
 }

@@ -28,7 +28,7 @@ class GraphQL extends EntityAbstract implements CanCached
      */
     public function __construct(Collection $collection)
     {
-        parent::__construct([]);
+        parent::__construct();
         $this->collection = $collection;
     }
 
@@ -57,7 +57,7 @@ class GraphQL extends EntityAbstract implements CanCached
     /**
      * Endpoint url
      *
-     * @return string
+     * @return stringgetCached
      */
     public function endpoint(): string
     {
@@ -66,24 +66,33 @@ class GraphQL extends EntityAbstract implements CanCached
 
     /**
      * Cache query data (Only for Query)
+     *
      * @return array
      */
     public function getCached(): array
     {
-        return $this->cacheData = $this->collection->getQueries()
+        $this->cacheData = $this->collection->getQueries()
             ->filter(function (Builder $query) {
-                return $query instanceof Query;
+                return $query instanceof Query && $query->getName() !== 'lastUpdatedAt';
             })
             ->mapWithKeys(function (Builder $query) {
-                return [
-                    $query->getName() => $this->getCacheContent($query->cacheKey()),
-                ];
+                $cacheTime = $this->getCachedTime($query->cacheKey());
+                if ($cacheTime && $cacheTime['lastUpdatedAt'] === $this->getLastUpdatedAt()) {
+                    return [
+                        $query->getName() => $this->getCacheContent($query->cacheKey()),
+                    ];
+                }
+                return [$query->getName() => null];
             })->filter(function ($value) {
                 return $value;
             })->each(function ($value, $key) {
                 $this->collection->removeQuery($key);
             })->toArray();
+
+
+        return $this->cacheData;
     }
+
 
     /**
      * @return bool
@@ -96,10 +105,15 @@ class GraphQL extends EntityAbstract implements CanCached
     /**
      * Save cache
      *
+     * @param $data
+     *
      * @return mixed
      */
     public function saveCache($data)
     {
+        if ($this->collection->find('lastUpdatedAt')) {
+            return;
+        }
         collect($data)->each(function ($value, $key) {
             /** @var Query $query */
             $query = $this->collection->find($key);

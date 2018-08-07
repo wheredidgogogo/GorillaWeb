@@ -18,7 +18,8 @@
         "guzzlehttp/guzzle": "^6",
         "phpfastcache/phpfastcache": "^6.0",
         "tightenco/collect": "^5",
-        "ext-json": "*"
+        "ext-json": "*",
+        "nesbot/carbon": "^1.33"
     },
     "require-dev": {
         "phpunit/phpunit": "*",

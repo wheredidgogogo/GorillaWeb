@@ -30,7 +30,7 @@ class Range extends EntityAbstract
      */
     public function __construct($arguments = [])
     {
-        parent::__construct($arguments);
+        parent::__construct();
 
         if (count($arguments) > 0) {
             $this->slug = $arguments[0];

@@ -62,14 +62,11 @@ class Client
 
     /**
      * @return JsonResponse|string
-     * @throws \RuntimeException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
-     * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
-     * @throws \InvalidArgumentException
-     * @throws \GuzzleHttp\Exception\RequestException
-     * @throws \Gorilla\Exceptions\ResponseException
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
      */
     public function get()
     {
@@ -104,6 +101,7 @@ class Client
 
     /**
      * Set cache seconds
+     *
      * @param $seconds
      *
      * @return $this
@@ -133,7 +131,7 @@ class Client
     public function __call($name, $arguments)
     {
         if (method_exists($this->request, $name)) {
-            return call_user_func_array([$this->request, $name], $arguments);
+            return \call_user_func_array([$this->request, $name], $arguments);
         }
 
         if (method_exists($this->queries, $name)) {

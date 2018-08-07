@@ -24,7 +24,7 @@ class WebsiteSection extends EntityAbstract
      */
     public function __construct(array $arguments = [])
     {
-        parent::__construct($arguments);
+        parent::__construct();
 
         if (count($arguments) > 0) {
             $this->name = $arguments[0];

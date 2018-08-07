@@ -40,7 +40,7 @@ class Factory
             case 'ranges':
                 return new Range($arguments);
             case 'componentTypes':
-                return new ComponentType($arguments);
+                return new ComponentType();
             case 'websiteSections':
                 return new WebsiteSection($arguments);
             case 'websiteComponents':

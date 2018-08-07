@@ -7,13 +7,14 @@ namespace Gorilla\Contracts;
  *
  * @package Gorilla\Contracts
  */
+
 /**
  * Class EntityAbstract
  *
  * @package Gorilla\Contracts
  */
+
 use Gorilla\Request;
-use Gorilla\Traits\Cacheable;
 
 /**
  * Class EntityAbstract
@@ -33,11 +34,15 @@ abstract class EntityAbstract implements EntityInterface
     protected $parameters;
 
     /**
+     * @var ?string
+     */
+    protected $lastUpdatedAt;
+
+    /**
      * EntityAbstract constructor.
      *
-     * @param $arguments
      */
-    public function __construct($arguments = [])
+    public function __construct()
     {
         if ($this instanceof CanCached) {
             $this->bootCached();
@@ -66,9 +71,29 @@ abstract class EntityAbstract implements EntityInterface
      * @throws \GuzzleHttp\Exception\RequestException
      * @throws \Gorilla\Exceptions\ResponseException
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function get()
     {
         return $this->request->request($this);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastUpdatedAt()
+    {
+        return $this->lastUpdatedAt;
+    }
+
+    /**
+     * @param mixed $lastUpdatedAt
+     *
+     * @return \Gorilla\Contracts\EntityAbstract
+     */
+    public function setLastUpdatedAt($lastUpdatedAt)
+    {
+        $this->lastUpdatedAt = $lastUpdatedAt;
+        return $this;
     }
 }
