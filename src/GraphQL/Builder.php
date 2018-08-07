@@ -43,6 +43,10 @@ class Builder
      */
     public function __toString()
     {
+        if (!in_array('last_updated_at', $this->fields->toArray(), true)) {
+            $this->fields[] = 'last_updated_at';
+        }
+
         return <<<EOF
     {$this->name} {$this->buildFilters($this->getBaseFilter())}{
         {$this->buildFields($this->fields)}
@@ -110,7 +114,6 @@ EOF;
         }
 
         $query = '';
-
         $fields->each(function ($value, $key) use (&$query, $parent) {
             if (\is_string($key)) {
                 $parent = $parent ? "{$parent}.{$key}" : $key;

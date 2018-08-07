@@ -31,7 +31,8 @@ trait Cacheable
 
     /**
      *
-     * @throws \RuntimeException
+     * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
      */
     public function bootCached()
     {
@@ -71,6 +72,7 @@ trait Cacheable
      *
      * @return mixed|null
      * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function getCached($key)
     {

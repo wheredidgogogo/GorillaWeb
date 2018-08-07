@@ -69,6 +69,7 @@ class Client
      * @throws \InvalidArgumentException
      * @throws \GuzzleHttp\Exception\RequestException
      * @throws \Gorilla\Exceptions\ResponseException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function get()
     {

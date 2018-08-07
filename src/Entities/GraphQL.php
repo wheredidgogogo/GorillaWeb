@@ -67,7 +67,6 @@ class GraphQL extends EntityAbstract implements CanCached
     /**
      * Cache query data (Only for Query)
      * @return array
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
      */
     public function getCached(): array
     {
@@ -98,7 +97,6 @@ class GraphQL extends EntityAbstract implements CanCached
      * Save cache
      *
      * @return mixed
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
      */
     public function saveCache($data)
     {

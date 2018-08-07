@@ -129,6 +129,7 @@ class Request implements RequestInterface
      * @throws \InvalidArgumentException
      * @throws \Gorilla\Exceptions\ResponseException
      * @throws \GuzzleHttp\Exception\RequestException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function request(EntityInterface $entity)
     {
@@ -199,6 +200,7 @@ class Request implements RequestInterface
      * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
      * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
      * @throws \InvalidArgumentException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     private function needAccess(EntityInterface $entity, &$options)
     {
