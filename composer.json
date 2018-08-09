@@ -19,7 +19,7 @@
         "phpfastcache/phpfastcache": "^6.0",
         "tightenco/collect": "^5",
         "ext-json": "*",
-        "nesbot/carbon": "^1.33"
+        "nesbot/carbon": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "*",

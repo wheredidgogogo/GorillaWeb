@@ -80,7 +80,6 @@ class Filter
         }
 
         if (\is_bool($value)) {
-//            dd(is_bool($value), $value);
             $value = $value === true ? 'true' : 'false';
         }
 
