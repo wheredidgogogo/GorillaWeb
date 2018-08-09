@@ -2,6 +2,7 @@
 
 namespace Gorilla\Entities;
 
+use Carbon\Carbon;
 use Gorilla\Contracts\CanCached;
 use Gorilla\Contracts\EntityAbstract;
 use Gorilla\Contracts\MethodType;
@@ -76,8 +77,8 @@ class GraphQL extends EntityAbstract implements CanCached
                 return $query instanceof Query && $query->getName() !== 'lastUpdatedAt';
             })
             ->mapWithKeys(function (Builder $query) {
-                $cacheTime = $this->getCachedTime($query->cacheKey());
-                if ($cacheTime && $cacheTime['lastUpdatedAt'] === $this->getLastUpdatedAt()) {
+
+                if ($this->inCacheTime($query)) {
                     return [
                         $query->getName() => $this->getCacheContent($query->cacheKey()),
                     ];
@@ -131,5 +132,24 @@ class GraphQL extends EntityAbstract implements CanCached
     public function merge(array $array)
     {
         return array_merge_recursive(['data' => $this->cacheData], $array);
+    }
+
+    /**
+     * @param \Gorilla\GraphQL\Builder $query
+     *
+     * @return bool
+     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     */
+    private function inCacheTime(Builder $query)
+    {
+        /** @var array $cacheTime */
+        $cacheTime = $this->getCachedTime($query->cacheKey());
+        if ($cacheTime) {
+            list('lastUpdatedAt' => $lastUpdatedAt, 'current' => $current) = $cacheTime;
+            return $cacheTime['lastUpdatedAt'] === $this->getLastUpdatedAt() || Carbon::now()->subMinute(2)->lessThan($current);
+        }
+
+        return false;
     }
 }
