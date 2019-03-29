@@ -2,8 +2,6 @@
 
 namespace Gorilla\GraphQL;
 
-use Tightenco\Collect\Support\Collection;
-
 /**
  * Class Mutation
  *
@@ -17,7 +15,7 @@ class Mutation extends Builder
     public function __toString()
     {
         return <<<EOF
-        {$this->name} {$this->buildFieldes($this->fields)}
+        {$this->name} {$this->buildFields($this->fields)}
 EOF;
     }
 
@@ -36,11 +34,11 @@ EOF;
     }
 
     /**
-     * @param Collection $fields
+     * @param \Tightenco\Collect\Support\Collection $fields
      *
      * @return string
      */
-    private function buildFieldes(Collection $fields)
+    private function buildFields($fields)
     {
         if ($fields->isEmpty()) {
             return '';

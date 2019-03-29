@@ -2,8 +2,6 @@
 
 namespace Gorilla\GraphQL;
 
-use Tightenco\Collect\Support\Collection as BaseCollection;
-
 /**
  * Class Collection
  *
@@ -17,7 +15,7 @@ class Collection
     private $method = 'query';
 
     /**
-     * @var BaseCollection
+     * @var \Tightenco\Collect\Support\Collection
      */
     private $queries;
 
@@ -31,7 +29,7 @@ class Collection
      */
     public function __construct()
     {
-        $this->queries = new BaseCollection();
+        $this->queries = collect();
     }
 
     /**
@@ -107,7 +105,7 @@ class Collection
      */
     public function reset()
     {
-        $this->queries = new BaseCollection();
+        $this->queries = collect();
         $this->current = null;
 
         return $this;
@@ -127,7 +125,7 @@ class Collection
     }
 
     /**
-     * @return BaseCollection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public function getQueries()
     {

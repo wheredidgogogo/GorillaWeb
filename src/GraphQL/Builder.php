@@ -2,8 +2,6 @@
 
 namespace Gorilla\GraphQL;
 
-use Tightenco\Collect\Support\Collection;
-
 /**
  * Class Builder
  *
@@ -34,8 +32,8 @@ class Builder
     public function __construct($name)
     {
         $this->name = $name;
-        $this->filters = new Collection();
-        $this->fields = new Collection();
+        $this->filters = collect();
+        $this->fields = collect();
     }
 
     /**
