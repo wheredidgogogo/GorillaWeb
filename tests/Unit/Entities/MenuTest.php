@@ -15,7 +15,7 @@ class MenuTest extends TestCase
      */
     private $menu;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->menu = new Menu();

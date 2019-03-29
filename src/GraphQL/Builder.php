@@ -49,7 +49,6 @@ class Builder
             return <<<EOF
 {$this->name}
 EOF;
-
         }
 
         return <<<EOF

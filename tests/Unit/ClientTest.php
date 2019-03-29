@@ -27,7 +27,7 @@ class ClientTest extends TestCase
      */
     private $container;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -105,7 +105,7 @@ class ClientTest extends TestCase
         $this->client->request(new postStub());
         /** @var Request $request */
         $request = end($this->container)['request'];
-        
+
         // Assert
         $this->assertEquals('https://www.google.com', $request->getUri()->__toString());
     }
@@ -200,6 +200,28 @@ class getStub implements EntityInterface
     {
         // TODO: Implement setRequest() method.
     }
+
+    /**
+     * Get last update at
+     *
+     * @return string|null
+     */
+    public function getLastUpdatedAt()
+    {
+        // TODO: Implement getLastUpdatedAt() method.
+    }
+
+    /**
+     * Set last update at
+     *
+     * @param ?string $lastUpdatedAt
+     *
+     * @return \Gorilla\Contracts\EntityAbstract
+     */
+    public function setLastUpdatedAt($lastUpdatedAt)
+    {
+        // TODO: Implement setLastUpdatedAt() method.
+    }
 }
 
 class postStub implements EntityInterface
@@ -248,5 +270,27 @@ class postStub implements EntityInterface
     public function setRequest(RequestInterface $request)
     {
         // TODO: Implement setRequest() method.
+    }
+
+    /**
+     * Get last update at
+     *
+     * @return string|null
+     */
+    public function getLastUpdatedAt()
+    {
+        // TODO: Implement getLastUpdatedAt() method.
+    }
+
+    /**
+     * Set last update at
+     *
+     * @param ?string $lastUpdatedAt
+     *
+     * @return \Gorilla\Contracts\EntityAbstract
+     */
+    public function setLastUpdatedAt($lastUpdatedAt)
+    {
+        // TODO: Implement setLastUpdatedAt() method.
     }
 }

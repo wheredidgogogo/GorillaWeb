@@ -77,7 +77,6 @@ class GraphQL extends EntityAbstract implements CanCached
                 return $query instanceof Query && $query->getName() !== 'lastUpdatedAt';
             })
             ->mapWithKeys(function (Builder $query) {
-
                 if ($this->inCacheTime($query)) {
                     return [
                         $query->getName() => $this->getCacheContent($query->cacheKey()),
@@ -147,7 +146,8 @@ class GraphQL extends EntityAbstract implements CanCached
         $cacheTime = $this->getCachedTime($query->cacheKey());
         if ($cacheTime) {
             list('lastUpdatedAt' => $lastUpdatedAt, 'current' => $current) = $cacheTime;
-            return $cacheTime['lastUpdatedAt'] === $this->getLastUpdatedAt() || Carbon::now()->subMinute(2)->lessThan($current);
+            return $cacheTime['lastUpdatedAt'] === $this->getLastUpdatedAt() ||
+                Carbon::now()->subMinute(2)->lessThan($current);
         }
 
         return false;

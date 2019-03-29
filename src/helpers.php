@@ -10,7 +10,6 @@ if (!function_exists('gorilla_value')) {
      */
     function gorilla_value($array, $field, $key)
     {
-
         return collect(array_wrap($array))->where($field, $key)->first();
     }
 }

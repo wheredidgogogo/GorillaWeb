@@ -21,7 +21,7 @@ class GraphQLCacheTest extends TestCase
      */
     private static $cache;
 
-    public function setUp()
+    public function setUp(): void
     {
         if (!self::$cache) {
             CacheManager::setDefaultConfig([
