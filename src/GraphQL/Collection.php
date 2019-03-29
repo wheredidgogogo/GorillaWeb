@@ -15,7 +15,7 @@ class Collection
     private $method = 'query';
 
     /**
-     * @var \Tightenco\Collect\Support\Collection
+     * @var \Illuminate\Support\Collection
      */
     private $queries;
 
@@ -125,7 +125,7 @@ class Collection
     }
 
     /**
-     * @return \Tightenco\Collect\Support\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function getQueries()
     {

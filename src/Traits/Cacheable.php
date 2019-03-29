@@ -4,8 +4,8 @@ namespace Gorilla\Traits;
 
 use Carbon\Carbon;
 use Gorilla\Contracts\CanCached;
+use Illuminate\Support\Arr;
 use phpFastCache\CacheManager;
-use Tightenco\Collect\Support\Arr;
 
 /**
  * Trait Cacheable

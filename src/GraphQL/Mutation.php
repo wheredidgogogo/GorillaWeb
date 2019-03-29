@@ -34,7 +34,7 @@ EOF;
     }
 
     /**
-     * @param \Tightenco\Collect\Support\Collection $fields
+     * @param \Illuminate\Support\Collection $fields
      *
      * @return string
      */

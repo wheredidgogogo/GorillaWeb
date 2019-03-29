@@ -13,9 +13,9 @@ use Gorilla\Response\JsonResponse;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7;
-use Log;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use RuntimeException;
-use Tightenco\Collect\Support\Arr;
 
 /**
  * Class Request
