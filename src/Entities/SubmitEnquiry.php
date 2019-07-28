@@ -70,6 +70,11 @@ class SubmitEnquiry extends EntityAbstract
     private $notifications;
 
     /**
+     * @var string
+     */
+    private $source;
+
+    /**
      * constructor.
      *
      * @param array   $arguments
@@ -113,6 +118,7 @@ class SubmitEnquiry extends EntityAbstract
             'fields' => $this->fields,
             'tribes' => $this->tribes,
             'files' => $this->files,
+            'source' => $this->source,
         ];
 
         if ($this->created_at) {
