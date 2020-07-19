@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Arr;
+
 if (!function_exists('gorilla_value')) {
     /**
      * @param array $array
@@ -10,6 +12,6 @@ if (!function_exists('gorilla_value')) {
      */
     function gorilla_value($array, $field, $key)
     {
-        return collect(array_wrap($array))->where($field, $key)->first();
+        return collect(Arr::wrap($array))->where($field, $key)->first();
     }
 }
