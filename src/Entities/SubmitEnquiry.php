@@ -40,6 +40,11 @@ class SubmitEnquiry extends EntityAbstract
     private $mobile;
 
     /**
+     * @var string
+     */
+    private $gorillaUserKey;
+
+    /**
      * @var array
      */
     private $fields = [];
@@ -119,6 +124,7 @@ class SubmitEnquiry extends EntityAbstract
             'tribes' => $this->tribes,
             'files' => $this->files,
             'source' => $this->source,
+            'gorilla_user_key' => $this->gorillaUserKey,
         ];
 
         if ($this->created_at) {
