@@ -73,6 +73,7 @@ class CollectionTest extends TestCase
                 id,
                 name,
             },
+            last_updated_at,
         }
     }
 EOF
@@ -121,6 +122,7 @@ EOF
                 id,
                 name,
             },
+            last_updated_at,
         }
         
         second_query {
@@ -130,6 +132,7 @@ EOF
                 id,
                 name,
             },
+            last_updated_at,
         }
     }
 EOF

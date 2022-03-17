@@ -5,7 +5,7 @@ namespace Gorilla\Traits;
 use Carbon\Carbon;
 use Gorilla\Contracts\CanCached;
 use Illuminate\Support\Arr;
-use phpFastCache\CacheManager;
+use Phpfastcache\CacheManager;
 
 /**
  * Trait Cacheable
@@ -15,7 +15,7 @@ use phpFastCache\CacheManager;
 trait Cacheable
 {
     /**
-     * @var \phpFastCache\Core\Pool\ExtendedCacheItemPoolInterface
+     * @var \Phpfastcache\Core\Pool\ExtendedCacheItemPoolInterface
      */
     protected static $cache;
 
@@ -33,8 +33,13 @@ trait Cacheable
 
     /**
      *
-     * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheDriverCheckException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheDriverException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheDriverNotFoundException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidConfigurationException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheLogicException
+     * @throws \ReflectionException
      */
     public function bootCached()
     {
@@ -72,7 +77,7 @@ trait Cacheable
      * @param $key
      *
      * @return mixed|null
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException
      * @throws \Psr\Cache\InvalidArgumentException
      */
     public function getCached($key)
@@ -109,7 +114,7 @@ trait Cacheable
      * @param $value
      *
      * @return bool
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException
      */
     public function saveCacheData($key, $value)
     {
@@ -133,7 +138,7 @@ trait Cacheable
      *
      * @return array
      * @throws \Psr\Cache\InvalidArgumentException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException
      */
     public function getCachedTime($key)
     {
@@ -141,6 +146,17 @@ trait Cacheable
         if ($item->isExpired() || !self::$cache->hasItem($key)) {
             return null;
         }
-        return Arr::only($item->get(), ['lastUpdatedAt', 'current']);
+
+        $cacheData = $item->get();
+
+        return Arr::only($cacheData, ['lastUpdatedAt', 'current']);
+    }
+
+    /**
+     * @return \Phpfastcache\Core\Pool\ExtendedCacheItemPoolInterface
+     */
+    public function getCacheInstance()
+    {
+        return self::$cache;
     }
 }

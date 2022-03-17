@@ -6,7 +6,8 @@ use Gorilla\Entities\GraphQL;
 use Gorilla\Exceptions\NonExistMethodException;
 use Gorilla\GraphQL\Collection;
 use Gorilla\Response\JsonResponse;
-use phpFastCache\CacheManager;
+use Phpfastcache\CacheManager;
+use Phpfastcache\Config\ConfigurationOption;
 
 /**
  * Class Client
@@ -46,32 +47,29 @@ class Client
      * @param $id
      * @param $token
      *
-     * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidConfigurationException
+     * @throws \ReflectionException
      */
     public function __construct($id, $token)
     {
         $this->request = new Request($id, $token);
         $this->queries = new Collection();
-        CacheManager::setDefaultConfig([
+        CacheManager::setDefaultConfig(new ConfigurationOption([
             'path' => $this->cachePath,
-            'ignoreSymfonyNotice' => true,
-        ]);
+        ]));
     }
 
     /**
      * @return JsonResponse|string
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Psr\Cache\InvalidArgumentException
-     * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheDriverCheckException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidConfigurationException
      */
     public function get()
     {
         $graphQL = new GraphQL($this->queries);
-        $graphQL->cache($this->cacheSeconds);
 
         $response = $this->request->request($graphQL);
         $this->queries->reset();
@@ -152,12 +150,13 @@ class Client
      * @param $path
      *
      * @return $this
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidConfigurationException
+     * @throws \ReflectionException
      */
     public function setCachePath($path)
     {
         $this->cachePath = $path;
-        CacheManager::setDefaultConfig('path', $path);
+        CacheManager::setDefaultConfig(new ConfigurationOption(['path' => $path]));
 
         return $this;
     }

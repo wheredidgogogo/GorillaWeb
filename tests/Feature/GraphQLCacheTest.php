@@ -10,8 +10,9 @@ use Gorilla\Request;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
-use phpFastCache\CacheManager;
-use phpFastCache\Core\Pool\ExtendedCacheItemPoolInterface;
+use Phpfastcache\CacheManager;
+use Phpfastcache\Config\ConfigurationOption;
+use Phpfastcache\Core\Pool\ExtendedCacheItemPoolInterface;
 use PHPUnit\Framework\TestCase;
 
 class GraphQLCacheTest extends TestCase
@@ -24,18 +25,16 @@ class GraphQLCacheTest extends TestCase
     public function setUp(): void
     {
         if (!self::$cache) {
-            CacheManager::setDefaultConfig([
+            CacheManager::setDefaultConfig(new ConfigurationOption([
                 'path' => dirname(dirname(__DIR__)).'/cache',
-                'ignoreSymfonyNotice' => true,
-            ]);
-            self::$cache = CacheManager::getInstance('files');
+            ]));
+//            self::$cache = CacheManager::getInstance('files');
         }
     }
 
     /** @test */
     public function get_data_from_cached()
     {
-        self::$cache->clear();
         // Arrange
         $collection = new Collection();
         $collection->query('my_first_query')
@@ -63,7 +62,8 @@ class GraphQLCacheTest extends TestCase
         $cloneQueries = $collection->getQueries();
 
         $graphQL = new GraphQL($collection);
-        $graphQL->cache();
+        self::$cache = $graphQL->getCacheInstance();
+        self::$cache->clear();
 
         $this->buildCache($collection->getQueries(), $graphQL->getExpires());
 
@@ -81,7 +81,6 @@ class GraphQLCacheTest extends TestCase
     /** @test */
     public function get_cache_but_one_query_was_expired()
     {
-        self::$cache->clear();
         // Arrange
         $collection = new Collection();
         $collection->query('my_first_query')
@@ -109,7 +108,8 @@ class GraphQLCacheTest extends TestCase
             ]);
 
         $graphQL = new GraphQL($collection);
-        $graphQL->cache();
+        self::$cache = $graphQL->getCacheInstance();
+        self::$cache->clear();
 
         $this->buildCache(collect([$collection->getQueries()->get(0)]), 6000);
         $this->buildCache(collect([$collection->getQueries()->get(1)]), (new \DateTime('now'))->modify('-1 week'));
@@ -124,7 +124,6 @@ class GraphQLCacheTest extends TestCase
     /** @test */
     public function merge_cache_and_response_data()
     {
-        self::$cache->clear();
         // Arrange
         $collection = new Collection();
         $collection->query('my_first_query')
@@ -152,7 +151,8 @@ class GraphQLCacheTest extends TestCase
             ]);
 
         $graphQL = new GraphQL($collection);
-        $graphQL->cache();
+        self::$cache = $graphQL->getCacheInstance();
+        self::$cache->clear();
         /** @var Query[] $cloneQueries */
         $cloneQueries = $collection->getQueries();
 
@@ -341,7 +341,6 @@ class GraphQLCacheTest extends TestCase
     /** @test */
     public function get_response_and_disable_cache()
     {
-        self::$cache->clear();
         // Arrange
         $collection = new Collection();
         $collection->query('my_first_query')
@@ -369,6 +368,7 @@ class GraphQLCacheTest extends TestCase
             ]);
 
         $graphQL = new GraphQL($collection);
+        self::$cache = $graphQL->getCacheInstance();
 
         $request = new Request('id', 'token');
         $request->setHandler($this->getMockHandler([
@@ -389,7 +389,8 @@ class GraphQLCacheTest extends TestCase
     {
         $array->each(function (Query $query) use ($expires) {
             $cache = self::$cache->getItem($query->cacheKey())->set($query->cacheKey());
-
+            var_dump($cache);
+            exit;
             if ($expires instanceof DateTimeInterface) {
                 $cache->expiresAt($expires);
             } else {

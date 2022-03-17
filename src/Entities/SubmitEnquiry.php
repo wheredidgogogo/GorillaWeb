@@ -168,9 +168,9 @@ class SubmitEnquiry extends EntityAbstract
      * @param $attributes
      *
      * @return \Gorilla\Response\JsonResponse
-     * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheDriverCheckException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidConfigurationException
      */
     public function save($attributes)
     {

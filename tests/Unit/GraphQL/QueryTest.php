@@ -18,7 +18,7 @@ class QueryTest extends TestCase
         // Assert
         $this->assertGraphQLEqual(<<<EOF
     first_query {
-        
+        last_updated_at,
     }
 EOF
             ,
@@ -41,7 +41,7 @@ EOF
         // Assert
         $this->assertGraphQLEqual(<<<EOF
     first_query (id: "1",name: "name") {
-        
+        last_updated_at,
     }
 EOF
             ,
@@ -67,7 +67,7 @@ EOF
         // Assert
         $this->assertGraphQLEqual(<<<EOF
     first_query (id: "1",name: ["homepage", "contact"]) {
-        
+        last_updated_at,
     }
 EOF
             ,
@@ -92,6 +92,7 @@ EOF
     first_query {
         first_field,
         second_field,
+        last_updated_at,
     }
 EOF
             ,
@@ -134,6 +135,7 @@ EOF
                 banner,
             },
         },
+        last_updated_at,
     }
 EOF
             ,
@@ -198,6 +200,7 @@ EOF
                 },
             },
         },
+        last_updated_at,
     }
 EOF
             ,
@@ -248,6 +251,7 @@ EOF
                 },
             },
         },
+        last_updated_at,
     }
 EOF
             ,

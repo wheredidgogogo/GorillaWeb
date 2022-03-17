@@ -126,9 +126,9 @@ class Request implements RequestInterface
      *
      * @return JsonResponse|string
      * @throws \RuntimeException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
-     * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidConfigurationException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheDriverCheckException
      * @throws \InvalidArgumentException
      * @throws \Gorilla\Exceptions\ResponseException
      * @throws \GuzzleHttp\Exception\RequestException
@@ -200,9 +200,9 @@ class Request implements RequestInterface
      * @return void
      * @throws \GuzzleHttp\Exception\RequestException
      * @throws \Gorilla\Exceptions\ResponseException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
-     * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidConfigurationException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheDriverCheckException
      * @throws \InvalidArgumentException
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Psr\Cache\InvalidArgumentException
@@ -238,9 +238,9 @@ class Request implements RequestInterface
     /**
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Psr\Cache\InvalidArgumentException
-     * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheDriverCheckException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidConfigurationException
      */
     private function getLastUpdatedAt()
     {

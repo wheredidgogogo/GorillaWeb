@@ -3,7 +3,7 @@
 namespace Gorilla;
 
 use InvalidArgumentException;
-use phpFastCache\CacheManager;
+use Phpfastcache\CacheManager;
 
 /**
  * Class AccessToken
@@ -28,16 +28,16 @@ class AccessToken
     private $cacheKey = 'GORILLADASH_CACHED_KEY';
 
     /**
-     * @var \phpFastCache\Core\Pool\ExtendedCacheItemPoolInterface
+     * @var \Phpfastcache\Core\Pool\ExtendedCacheItemPoolInterface
      */
     private static $cache;
 
     /**
      * AccessToken constructor.
      *
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
-     * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheDriverCheckException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidConfigurationException
      */
     public function __construct()
     {
@@ -48,7 +48,7 @@ class AccessToken
 
     /**
      *
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException
      */
     public function loadAccessTokenFromCached()
     {
@@ -66,7 +66,7 @@ class AccessToken
      * @param $expires
      *
      * @return $this
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException
      * @throws \InvalidArgumentException
      */
     public function setup($accessToken, $expires)
@@ -97,7 +97,7 @@ class AccessToken
     }
 
     /**
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException
      */
     private function accessTokenCached()
     {
@@ -121,7 +121,7 @@ class AccessToken
 
     /**
      * @return bool
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException
      * @throws \RuntimeException
      * @throws \Psr\Cache\InvalidArgumentException
      */
@@ -137,7 +137,7 @@ class AccessToken
     /**
      *
      * @throws \RuntimeException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException
      * @throws \Psr\Cache\InvalidArgumentException
      */
     public function checkExpired()

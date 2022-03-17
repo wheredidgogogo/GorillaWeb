@@ -64,9 +64,9 @@ abstract class EntityAbstract implements EntityInterface
     /**
      * @return \Gorilla\Response\JsonResponse|string
      * @throws \RuntimeException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
-     * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidConfigurationException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheDriverCheckException
      * @throws \InvalidArgumentException
      * @throws \GuzzleHttp\Exception\RequestException
      * @throws \Gorilla\Exceptions\ResponseException

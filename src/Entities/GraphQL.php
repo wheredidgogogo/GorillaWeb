@@ -138,7 +138,7 @@ class GraphQL extends EntityAbstract implements CanCached
      *
      * @return bool
      * @throws \Psr\Cache\InvalidArgumentException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException
      */
     private function inCacheTime(Builder $query)
     {
