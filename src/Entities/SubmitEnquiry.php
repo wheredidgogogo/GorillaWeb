@@ -80,6 +80,16 @@ class SubmitEnquiry extends EntityAbstract
     private $source;
 
     /**
+     * @var boolean
+     */
+    private $possibleSpam;
+
+    /**
+     * @var string
+     */
+    private $agent;
+
+    /**
      * constructor.
      *
      * @param array   $arguments
@@ -125,6 +135,8 @@ class SubmitEnquiry extends EntityAbstract
             'files' => $this->files,
             'source' => $this->source,
             'gorilla_user_key' => $this->gorillaUserKey,
+            'possible_spam' => $this->possibleSpam ?? false,
+            'agent' => $this->agent,
         ];
 
         if ($this->created_at) {
