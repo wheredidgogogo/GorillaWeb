@@ -13,6 +13,7 @@ use Gorilla\Response\JsonResponse;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7;
+use GuzzleHttp\Psr7\Message;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
@@ -163,10 +164,10 @@ class Request implements RequestInterface
         } catch (RequestException $ex) {
             if ($ex->hasResponse()) {
                 Log::error(json_encode($options));
-                throw new ResponseException(Psr7\str($ex->getResponse()));
+                throw new ResponseException(Message::toString($ex->getResponse()));
             }
 
-            throw new ResponseException(Psr7\str($ex->getRequest()));
+            throw new ResponseException(Message::toString($ex->getRequest()));
         }
     }
 
