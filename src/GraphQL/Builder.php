@@ -2,6 +2,8 @@
 
 namespace Gorilla\GraphQL;
 
+use Illuminate\Support\Str;
+
 /**
  * Class Builder
  *
@@ -41,7 +43,11 @@ class Builder
      */
     public function __toString()
     {
-        if ($this->name !== 'lastUpdatedAt' && !\in_array('last_updated_at', $this->fields->toArray(), true)) {
+        if (
+            $this->name !== 'lastUpdatedAt' &&
+            !\in_array('last_updated_at', $this->fields->toArray(), true) &&
+            !Str::of($this->name)->contains('Pagination')
+        ) {
             $this->fields[] = 'last_updated_at';
         }
 
@@ -105,7 +111,7 @@ EOF;
     }
 
     /**
-     * @param Collection  $fields
+     * @param Collection $fields
      *
      * @param null|string $parent
      *
