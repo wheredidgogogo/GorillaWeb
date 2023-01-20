@@ -32,6 +32,11 @@ trait Cacheable
     private $cacheData = [];
 
     /**
+     * @var bool
+     */
+    private $handleCacheByClient = false;
+
+    /**
      *
      * @throws \Phpfastcache\Exceptions\PhpfastcacheDriverCheckException
      * @throws \Phpfastcache\Exceptions\PhpfastcacheDriverException
@@ -54,12 +59,25 @@ trait Cacheable
 
     /**
      * @param int $seconds
-     * @deprecated Removed user control the cache expire, follow last updated time from server
      *
      * @return $this
      */
     public function cache($seconds = 60)
     {
+        if ($this->handleCacheByClient) {
+            $this->cacheTime = $seconds;
+        }
+        return $this;
+    }
+
+    /**
+     * @param $value
+     * @return $this
+     */
+    public function setHandleCacheByClient($value)
+    {
+        $this->handleCacheByClient = $value;
+
         return $this;
     }
 
