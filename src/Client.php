@@ -42,6 +42,12 @@ class Client
     private $defaultCacheSeconds = 60;
 
     /**
+     * @var bool
+     */
+    private $handleCacheByClient = false;
+
+
+    /**
      * Client constructor.
      *
      * @param $id
@@ -60,6 +66,17 @@ class Client
     }
 
     /**
+     * @param $value
+     * @return $this
+     */
+    public function setHandleCacheByClient($value)
+    {
+        $this->handleCacheByClient = $value;
+
+        return $this;
+    }
+
+    /**
      * @return JsonResponse|string
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Psr\Cache\InvalidArgumentException
@@ -69,8 +86,9 @@ class Client
      */
     public function get()
     {
-        $graphQL = new GraphQL($this->queries);
-
+        $graphQL = (new GraphQL($this->queries))
+            ->setHandleCacheByClient($this->handleCacheByClient)
+            ->cache($this->cacheSeconds);
         $response = $this->request->request($graphQL);
         $this->queries->reset();
 
