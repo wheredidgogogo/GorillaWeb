@@ -146,7 +146,6 @@ class Request implements RequestInterface
         $this->needAccess($entity, $options);
 
         if ($entity instanceof CanCached) {
-            $entity->setLastUpdatedAt(self::$lastUpdatedAt);
             $entity->getCached();
             if ($entity->allInCached()) {
                 return new JsonResponse($entity->merge([]));
@@ -231,9 +230,6 @@ class Request implements RequestInterface
             $this->setAccessToken($accessToken);
         }
         $options['headers']['Authorization'] = "Bearer {$this->accessToken->getAccessToken()}";
-        if (!$entity instanceof LastUpdatedAt) {
-            $this->getLastUpdatedAt();
-        }
     }
 
     /**

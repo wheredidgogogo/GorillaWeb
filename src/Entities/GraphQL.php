@@ -10,6 +10,8 @@ use Gorilla\GraphQL\Builder;
 use Gorilla\GraphQL\Collection;
 use Gorilla\GraphQL\Query;
 use Gorilla\Traits\Cacheable;
+use Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException;
+use Psr\Cache\InvalidArgumentException;
 
 class GraphQL extends EntityAbstract implements CanCached
 {
@@ -22,10 +24,12 @@ class GraphQL extends EntityAbstract implements CanCached
      */
     private $collection;
 
+    private $fromApi = false;
+
     /**
      * GraphQL constructor.
      *
-     * @param Collection $collection
+     * @param  Collection  $collection
      */
     public function __construct(Collection $collection)
     {
@@ -51,14 +55,14 @@ class GraphQL extends EntityAbstract implements CanCached
     public function parameters(): array
     {
         return [
-            'query' => (string)$this->collection,
+            'query' => (string) $this->collection,
         ];
     }
 
     /**
      * Endpoint url
      *
-     * @return stringgetCached
+     * @return string
      */
     public function endpoint(): string
     {
@@ -69,36 +73,54 @@ class GraphQL extends EntityAbstract implements CanCached
      * Cache query data (Only for Query)
      *
      * @return array
+     * @throws PhpfastcacheInvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getCached(): array
     {
-        $this->cacheData = $this->collection->getQueries()
+        if ($this->fromApi) {
+            return $this->cacheData;
+        }
+
+        $this->cacheData = $this->collection
+            ->getQueries()
             ->filter(function (Builder $query) {
-                return $query instanceof Query && $query->getName() !== 'lastUpdatedAt';
+                return $query instanceof Query;
             })
             ->mapWithKeys(function (Builder $query) {
-                if ($this->inCacheTime($query)) {
-                    return [
-                        $query->getName() => $this->getCacheContent($query->cacheKey()),
-                    ];
-                }
-                return [$query->getName() => null];
-            })->filter(function ($value) {
+                return [
+                    $query->getName() => $this->getCacheContent($query->cacheKey()),
+                ];
+            })
+            ->filter(function ($value) {
                 return $value;
-            })->each(function ($value, $key) {
+            })
+            ->each(function ($value, $key) {
                 $this->collection->removeQuery($key);
-            })->toArray();
-
+            })
+            ->toArray();
 
         return $this->cacheData;
     }
 
+    /**
+     * @return $this
+     */
+    public function withoutCacheContent()
+    {
+        $this->fromApi = true;
+
+        return $this;
+    }
 
     /**
      * @return bool
      */
     public function allInCached(): bool
     {
+        if ($this->fromApi) {
+            return false;
+        }
         return $this->collection->getQueries()->isEmpty();
     }
 
@@ -108,12 +130,10 @@ class GraphQL extends EntityAbstract implements CanCached
      * @param $data
      *
      * @return mixed
+     * @throws PhpfastcacheInvalidArgumentException
      */
     public function saveCache($data)
     {
-        if ($this->collection->find('lastUpdatedAt')) {
-            return;
-        }
         collect($data)->each(function ($value, $key) {
             /** @var Query $query */
             $query = $this->collection->find($key);
@@ -124,32 +144,12 @@ class GraphQL extends EntityAbstract implements CanCached
     }
 
     /**
-     * @param array $array
+     * @param  array  $array
      *
      * @return array
      */
     public function merge(array $array)
     {
         return array_merge_recursive(['data' => $this->cacheData], $array);
-    }
-
-    /**
-     * @param \Gorilla\GraphQL\Builder $query
-     *
-     * @return bool
-     * @throws \Psr\Cache\InvalidArgumentException
-     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException
-     */
-    private function inCacheTime(Builder $query)
-    {
-        /** @var array $cacheTime */
-        $cacheTime = $this->getCachedTime($query->cacheKey());
-        if ($cacheTime) {
-            list('lastUpdatedAt' => $lastUpdatedAt, 'current' => $current) = $cacheTime;
-            return $cacheTime['lastUpdatedAt'] === $this->getLastUpdatedAt() ||
-                Carbon::now()->subMinute(2)->lessThan($current);
-        }
-
-        return false;
     }
 }

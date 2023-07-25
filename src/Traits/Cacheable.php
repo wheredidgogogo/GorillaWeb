@@ -6,6 +6,11 @@ use Carbon\Carbon;
 use Gorilla\Contracts\CanCached;
 use Illuminate\Support\Arr;
 use Phpfastcache\CacheManager;
+use Phpfastcache\Core\Pool\ExtendedCacheItemPoolInterface;
+use Phpfastcache\Exceptions\PhpfastcacheDriverCheckException;
+use Phpfastcache\Exceptions\PhpfastcacheDriverException;
+use Phpfastcache\Exceptions\PhpfastcacheDriverNotFoundException;
+use Phpfastcache\Exceptions\PhpfastcacheLogicException;
 
 /**
  * Trait Cacheable
@@ -38,13 +43,10 @@ trait Cacheable
 
     /**
      *
-     * @throws \Phpfastcache\Exceptions\PhpfastcacheDriverCheckException
-     * @throws \Phpfastcache\Exceptions\PhpfastcacheDriverException
-     * @throws \Phpfastcache\Exceptions\PhpfastcacheDriverNotFoundException
-     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException
-     * @throws \Phpfastcache\Exceptions\PhpfastcacheInvalidConfigurationException
-     * @throws \Phpfastcache\Exceptions\PhpfastcacheLogicException
-     * @throws \ReflectionException
+     * @throws PhpfastcacheDriverCheckException
+     * @throws PhpfastcacheDriverException
+     * @throws PhpfastcacheDriverNotFoundException
+     * @throws PhpfastcacheLogicException
      */
     public function bootCached()
     {
@@ -138,8 +140,6 @@ trait Cacheable
     {
         if ($this->cacheTime) {
             $cached = [
-                'current' => Carbon::now()->__toString(),
-                'lastUpdatedAt' => data_get($value, '0.last_updated_at'),
                 'data' => $value,
             ];
 
@@ -171,7 +171,7 @@ trait Cacheable
     }
 
     /**
-     * @return \Phpfastcache\Core\Pool\ExtendedCacheItemPoolInterface
+     * @return ExtendedCacheItemPoolInterface
      */
     public function getCacheInstance()
     {

@@ -19,12 +19,12 @@ class Client
     /**
      * @var Request
      */
-    private $request;
+    protected $request;
 
     /**
      * @var Collection
      */
-    private $queries;
+    protected $queries;
 
     /**
      * @var string
