@@ -8,6 +8,7 @@ use Gorilla\Contracts\EntityAbstract;
 use Gorilla\Contracts\MethodType;
 use Gorilla\GraphQL\Builder;
 use Gorilla\GraphQL\Collection;
+use Gorilla\GraphQL\Mutation;
 use Gorilla\GraphQL\Query;
 use Gorilla\Traits\Cacheable;
 use Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException;
@@ -59,6 +60,19 @@ class GraphQL extends EntityAbstract implements CanCached
         ];
     }
 
+    /**
+     * @return bool
+     */
+    public function isQuery()
+    {
+        return $this->collection
+            ->getQueries()
+            ->filter(function (Builder $query) {
+                return $query instanceof Mutation;
+            })
+            ->isEmpty();
+    }
+    
     /**
      * Endpoint url
      *
