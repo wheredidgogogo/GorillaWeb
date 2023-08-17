@@ -72,7 +72,7 @@ class GraphQL extends EntityAbstract implements CanCached
             })
             ->isEmpty();
     }
-    
+
     /**
      * Endpoint url
      *
@@ -164,6 +164,6 @@ class GraphQL extends EntityAbstract implements CanCached
      */
     public function merge(array $array)
     {
-        return array_merge_recursive(['data' => $this->cacheData], $array);
+        return array_merge(['data' => $this->cacheData], $array);
     }
 }
