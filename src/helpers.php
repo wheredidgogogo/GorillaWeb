@@ -12,7 +12,7 @@ if (!function_exists('gorilla_value')) {
      */
     function gorilla_value($array, $field, $key)
     {
-        return collect(Arr::wrap($array))->where($field, $key)->first();
+        return collect(Arr::wrap($array))->where($field, $key)->filter()->first();
     }
 }
 
@@ -26,6 +26,6 @@ if (!function_exists('gorillaValue')) {
      */
     function gorillaValue($array, $field, $key)
     {
-        return collect(Arr::wrap($array))->where($field, $key)->first();
+        return collect(Arr::wrap($array))->where($field, $key)->filter()->first();
     }
 }
