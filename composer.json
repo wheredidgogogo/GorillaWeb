@@ -14,12 +14,12 @@
         }
     ],
     "require": {
-        "php": "^8.2|^8.3",
+        "php": "^8.3",
         "guzzlehttp/guzzle": "^7.2",
         "phpfastcache/phpfastcache": "^9.0",
         "ext-json": "*",
         "nesbot/carbon": "^3.0",
-        "illuminate/support": "^12"
+        "illuminate/support": "^13"
     },
     "require-dev": {
         "phpunit/phpunit": "*",
